@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#15382f">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Sicilia 2026</title>
+<style>
+:root{--bg:#f7f0e6;--card:#fffdf9;--ink:#1d2f29;--muted:#708078;--green:#15382f;--sage:#dce9df;--orange:#cf7451;--line:#e7ded2;--shadow:0 16px 45px rgba(45,48,38,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select,textarea{font:inherit}.app{max-width:1120px;margin:auto;padding:14px 14px 110px}
+.hero{position:relative;min-height:460px;border-radius:32px;padding:28px;color:white;overflow:hidden;background:linear-gradient(135deg,rgba(17,50,39,.92),rgba(76,109,74,.45)),url('https://images.unsplash.com/photo-1529260830199-42c24126f198?auto=format&fit=crop&w=1600&q=80') center/cover;box-shadow:var(--shadow)}
+.hero h1{font-family:Georgia,serif;font-size:clamp(3.2rem,10vw,6.8rem);line-height:.86;margin:92px 0 18px}.hero p{max-width:630px;line-height:1.6;color:#edf4ef;font-size:1.05rem}
+.lang{position:absolute;right:20px;top:20px;padding:4px;border-radius:999px;background:rgba(255,255,255,.17);backdrop-filter:blur(8px)}.lang button{border:0;background:transparent;color:white;padding:8px 12px;border-radius:99px;font-weight:900}.lang .active{background:white;color:var(--green)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{padding:10px 13px;border-radius:999px;background:rgba(255,255,255,.15);font-weight:800;font-size:.88rem;backdrop-filter:blur(8px)}
+nav{position:sticky;top:8px;z-index:10;margin:14px 0 22px;padding:7px;display:flex;gap:6px;overflow:auto;background:rgba(255,253,249,.9);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:17px;box-shadow:0 8px 24px rgba(40,35,26,.07)}
+nav button{border:0;background:transparent;padding:11px 14px;border-radius:11px;font-weight:900;color:var(--muted);white-space:nowrap}nav button.active{background:var(--green);color:white}
+section{display:none}section.active{display:block}.head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:8px 3px 14px}.head h2{font-family:Georgia,serif;font-size:clamp(2.1rem,5vw,3.1rem);margin:0}.head p{max-width:520px;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.card{grid-column:span 4;background:var(--card);border:1px solid var(--line);border-radius:23px;padding:19px;box-shadow:0 8px 24px rgba(60,45,28,.05)}.wide{grid-column:span 8}.full{grid-column:1/-1}.half{grid-column:span 6}.accent{background:var(--sage)}.dark{background:var(--green);color:white}
+.label{text-transform:uppercase;letter-spacing:.13em;font-size:.68rem;font-weight:900;color:var(--muted)}.dark .label,.dark .muted{color:#bfd2c6}.big{display:block;font-family:Georgia,serif;font-size:2.35rem;margin:17px 0 4px}.muted{color:var(--muted)}
+.btn{border:0;border-radius:13px;padding:11px 14px;background:var(--green);color:white;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.btn.secondary{background:white;color:var(--ink);border:1px solid var(--line)}.btn.danger{background:#fff0ea;color:#994728}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.list{display:grid;gap:10px}.item{background:white;border:1px solid var(--line);border-radius:17px;padding:14px}.itemtop{display:flex;justify-content:space-between;gap:10px;align-items:start}.item h3{margin:0 0 5px}.badge{background:var(--sage);padding:6px 9px;border-radius:99px;font-size:.7rem;font-weight:900}.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.mini{background:#faf6ef;border-radius:11px;padding:9px}.mini small{display:block;color:var(--muted);margin-bottom:3px}
+.vote{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:12px}.vote button{border:0;background:var(--sage);padding:8px 11px;border-radius:10px;font-weight:900}
+.check{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}.check:last-child{border:0}.check input{width:20px;height:20px}
+.notice{padding:14px 16px;background:#fff2e9;border-left:4px solid var(--orange);border-radius:13px;color:#75422e;line-height:1.5}
+dialog{border:0;border-radius:22px;padding:0;max-width:620px;width:calc(100% - 24px);box-shadow:0 30px 80px rgba(0,0,0,.28)}dialog::backdrop{background:rgba(15,30,24,.6);backdrop-filter:blur(4px)}.modal{padding:22px}.modalhead{display:flex;justify-content:space-between}.modal h3{font-family:Georgia,serif;font-size:1.8rem;margin:0}.close{border:0;background:#eee7dc;width:38px;height:38px;border-radius:50%}.form{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:17px}.form label{display:grid;gap:6px;font-size:.82rem;font-weight:900}.form input,.form select,.form textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;background:#fbf8f3}.form textarea{min-height:85px}.span2{grid-column:1/-1}
+footer{text-align:center;color:var(--muted);font-size:.82rem;margin-top:30px}
+@media(max-width:780px){.card,.wide,.half{grid-column:1/-1}.head{display:block}.head p{margin-top:6px}.form{grid-template-columns:1fr}.span2{grid-column:auto}.hero{min-height:500px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="hero">
+<div class="lang"><button id="it" class="active">IT</button><button id="en">EN</button></div>
+<div class="label" style="color:#d9e7dc" data-it="Vacanza di gruppo · Sicilia" data-en="Group trip · Sicily">Vacanza di gruppo · Sicilia</div>
+<h1>Ispica<br>2026</h1>
+<p data-it="La nostra app per voli, attività, auto, spesa, costi e premi finali." data-en="Our app for flights, activities, cars, shopping, costs and final awards.">La nostra app per voli, attività, auto, spesa, costi e premi finali.</p>
+<div class="chips"><span class="chip">📍 Ispica</span><span class="chip" data-it="📅 29 luglio – 3 agosto" data-en="📅 29 July – 3 August">📅 29 luglio – 3 agosto</span><span class="chip" data-it="👥 14 persone" data-en="👥 14 people">👥 14 persone</span></div>
+</header>
+<nav>
+<button class="active" data-page="home">Home</button>
+<button data-page="people" data-it="Partecipanti" data-en="People">Partecipanti</button>
+<button data-page="activities" data-it="Attività" data-en="Activities">Attività</button>
+<button data-page="cars" data-it="Auto" data-en="Cars">Auto</button>
+<button data-page="shopping" data-it="Spesa" data-en="Shopping">Spesa</button>
+<button data-page="money" data-it="Soldi" data-en="Money">Soldi</button>
+<button data-page="awards" data-it="Premi" data-en="Awards">Premi</button>
+</nav>
+
+<section id="home" class="active">
+<div class="head"><div><div class="label" data-it="Panoramica" data-en="Overview">Panoramica</div><h2 data-it="Tutto in un posto" data-en="Everything in one place">Tutto in un posto</h2></div></div>
+<div class="grid">
+<div class="card accent"><div class="label" data-it="Villa" data-en="Villa">Villa</div><strong class="big">5</strong><span data-it="notti" data-en="nights">notti</span></div>
+<div class="card"><div class="label" data-it="Quota a testa" data-en="Per person">Quota a testa</div><strong class="big">€303,57</strong><span>14 people</span></div>
+<div class="card dark"><div class="label">Will</div><strong class="big">28/07</strong><span data-it="arrivo alle 10:00" data-en="arrival at 10:00">arrivo alle 10:00</span></div>
+<div class="card wide"><div class="label" data-it="Casa base" data-en="Home base">Casa base</div><h2 data-it="Villa a Ispica" data-en="Villa in Ispica">Villa a Ispica</h2><p class="muted" data-it="Prenotazione confermata per 14 persone." data-en="Booking confirmed for 14 people.">Prenotazione confermata per 14 persone.</p><div class="actions"><a class="btn" href="https://www.booking.com/Share-5o20nk" target="_blank" data-it="Apri Booking" data-en="Open Booking">Apri Booking</a><a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Ispica%2C%20RG" target="_blank" data-it="Apri mappa" data-en="Open map">Apri mappa</a><a class="btn" href="https://www.splitwise.com/join/3PmEfYVqpdy+1eb5zn?v=e" target="_blank" rel="noopener" data-it="💸 Apri Splitwise" data-en="💸 Open Splitwise">💸 Apri Splitwise</a></div></div>
+<div class="card"><div class="label" data-it="Countdown" data-en="Countdown">Countdown</div><strong class="big" id="countdown">—</strong><span data-it="giorni alla villa" data-en="days to the villa">giorni alla villa</span></div>
+<div class="card full"><div class="notice" data-it="Questa versione salva le modifiche sul dispositivo. Per condividerle tra tutti serve collegare un database esterno."
+data-en="This version saves changes on the device. Sharing updates across all phones requires an external database.">Questa versione salva le modifiche sul dispositivo. Per condividerle tra tutti serve collegare un database esterno.</div></div>
+</div>
+</section>
+
+<section id="people"><div class="head"><div><div class="label" data-it="Arrivi e partenze" data-en="Arrivals and departures">Arrivi e partenze</div><h2 data-it="Partecipanti" data-en="People">Partecipanti</h2></div><button class="btn" id="addPerson" data-it="+ Persona" data-en="+ Person">+ Persona</button></div><div class="card full"><div id="peopleList" class="list"></div></div></section>
+
+<section id="activities"><div class="head"><div><div class="label" data-it="Proposte e voti" data-en="Suggestions and votes">Proposte e voti</div><h2 data-it="Attività" data-en="Activities">Attività</h2></div><button class="btn" id="addActivity" data-it="+ Suggerisci attività" data-en="+ Suggest activity">+ Suggerisci attività</button></div><div class="card full"><div id="activityList" class="list"></div></div></section>
+
+<section id="cars"><div class="head"><div><div class="label" data-it="Trasporti" data-en="Transport">Trasporti</div><h2 data-it="Auto e posti" data-en="Cars and seats">Auto e posti</h2></div></div><div class="grid"><div class="card wide"><div id="carList" class="list"></div></div><div class="card"><div class="label" data-it="Posti totali" data-en="Total seats">Posti totali</div><strong class="big" id="seatTotal">0</strong><span data-it="disponibili" data-en="available">disponibili</span></div></div></section>
+
+<section id="shopping"><div class="head"><div><div class="label" data-it="Lista condivisa" data-en="Shared list">Lista condivisa</div><h2 data-it="Spesa" data-en="Shopping">Spesa</h2></div><button class="btn" id="addShopping" data-it="+ Prodotto" data-en="+ Item">+ Prodotto</button></div><div class="grid"><div class="card wide"><div id="shoppingList"></div></div><div class="card"><div class="label" data-it="Completata" data-en="Completed">Completata</div><strong class="big" id="shoppingPct">0%</strong></div></div></section>
+
+<section id="money"><div class="head"><div><div class="label" data-it="Quote e spese" data-en="Shares and expenses">Quote e spese</div><h2 data-it="Soldi" data-en="Money">Soldi</h2></div><button class="btn" id="addExpense" data-it="+ Spesa" data-en="+ Expense">+ Spesa</button></div>
+<div class="grid">
+<div class="card full accent">
+  <div class="label" data-it="Spese condivise" data-en="Shared expenses">Spese condivise</div>
+  <h2 data-it="Gestiamo tutto su Splitwise" data-en="We manage everything on Splitwise">Gestiamo tutto su Splitwise</h2>
+  <p class="muted" data-it="Apri il gruppo Sicilia 2026 per aggiungere spese, vedere i saldi e regolare i conti." data-en="Open the Sicily 2026 group to add expenses, check balances and settle up.">Apri il gruppo Sicilia 2026 per aggiungere spese, vedere i saldi e regolare i conti.</p>
+  <div class="actions"><a class="btn" href="https://www.splitwise.com/join/3PmEfYVqpdy+1eb5zn?v=e" target="_blank" rel="noopener" data-it="💸 Apri il gruppo Splitwise" data-en="💸 Open Splitwise group">💸 Apri il gruppo Splitwise</a></div>
+</div><div class="card"><div class="label" data-it="Villa totale" data-en="Villa total">Villa totale</div><strong class="big">€4.250</strong></div><div class="card"><div class="label" data-it="Quota" data-en="Share">Quota</div><strong class="big">€303,57</strong></div><div class="card"><div class="label" data-it="Spese extra" data-en="Extra expenses">Spese extra</div><strong class="big" id="expenseTotal">€0</strong></div><div class="card full"><div id="expenseList" class="list"></div></div></div></section>
+
+<section id="awards"><div class="head"><div><div class="label" data-it="Ultima sera" data-en="Final night">Ultima sera</div><h2>🏆 Holiday Awards 2026</h2></div></div><div class="grid"><div class="card half"><h3>🍺 Biggest Drinker</h3><p class="muted" data-it="Chi ha bevuto di più?" data-en="Who drank the most?">Chi ha bevuto di più?</p></div><div class="card half"><h3>🌿 Biggest Weed Smoker</h3><p class="muted" data-it="Chi ha fumato più erba?" data-en="Who smoked the most weed?">Chi ha fumato più erba?</p></div><div class="card half"><h3>💩 King/Queen of the Toilet</h3><p class="muted" data-it="Chi ha fatto più la cacca?" data-en="Who pooped the most?">Chi ha fatto più la cacca?</p></div><div class="card half"><h3>💸 The Tightest Wallet</h3><p class="muted" data-it="Chi è stato il più tirchio?" data-en="Who was the stingiest?">Chi è stato il più tirchio?</p></div><div class="card half"><h3>🙄 Drama Queen / King</h3><p class="muted" data-it="Chi è stato il più polemico?" data-en="Who complained the most?">Chi è stato il più polemico?</p></div></div></section>
+<footer>Sicilia 2026 · PWA bilingue</footer>
+</div>
+
+<dialog id="personDialog"><form method="dialog" class="modal" id="personForm"><div class="modalhead"><h3 data-it="Modifica persona" data-en="Edit person">Modifica persona</h3><button class="close" value="cancel">×</button></div><input type="hidden" name="idx"><div class="form"><label class="span2"><span data-it="Nome" data-en="Name">Nome</span><input name="name" required></label><label><span data-it="Arrivo" data-en="Arrival">Arrivo</span><input name="arrival"></label><label><span data-it="Partenza" data-en="Departure">Partenza</span><input name="departure"></label><label><span data-it="Auto" data-en="Car">Auto</span><select name="car"><option value="false">No</option><option value="true">Sì</option></select></label><label><span data-it="Posti liberi" data-en="Free seats">Posti liberi</span><input name="seats" type="number" min="0" max="8"></label><label><span data-it="Villa pagata" data-en="Villa paid">Villa pagata</span><select name="paid"><option value="true">Sì</option><option value="false">No</option></select></label></div><div class="actions"><button class="btn" value="save" data-it="Salva" data-en="Save">Salva</button><button class="btn secondary" value="cancel" data-it="Annulla" data-en="Cancel">Annulla</button></div></form></dialog>
+
+<dialog id="genericDialog"><form method="dialog" class="modal" id="genericForm"><div class="modalhead"><h3 id="genericTitle">Aggiungi</h3><button class="close" value="cancel">×</button></div><div id="genericFields" class="form"></div><div class="actions"><button class="btn" value="save" data-it="Salva" data-en="Save">Salva</button><button class="btn secondary" value="cancel" data-it="Annulla" data-en="Cancel">Annulla</button></div></form></dialog>
+
+<script src="data.js"></script>
+<script>
+let lang=localStorage.getItem('siciliaLang')||'it';
+let state=JSON.parse(localStorage.getItem('siciliaFinalState')||'null')||window.INITIAL_DATA;
+const t=(it,en)=>lang==='it'?it:en;const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+function save(){localStorage.setItem('siciliaFinalState',JSON.stringify(state));render()}
+function applyLang(l){lang=l;localStorage.setItem('siciliaLang',l);document.documentElement.lang=l;document.querySelectorAll('[data-it][data-en]').forEach(x=>x.textContent=x.dataset[l]);it.classList.toggle('active',l==='it');en.classList.toggle('active',l==='en');render()}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('section').forEach(x=>x.classList.remove('active'));document.getElementById(b.dataset.page).classList.add('active')});
+const pd=document.getElementById('personDialog'),pf=document.getElementById('personForm');
+addPerson.onclick=()=>{pf.reset();pf.idx.value='';pd.showModal()};
+window.editPerson=i=>{let p=state.people[i];pf.idx.value=i;['name','arrival','departure','seats'].forEach(k=>pf[k].value=p[k]??'');pf.car.value=String(!!p.car);pf.paid.value=String(!!p.paid);pd.showModal()};
+pf.onsubmit=e=>{if(e.submitter?.value!=='save')return;e.preventDefault();let f=new FormData(pf),obj={name:f.get('name'),arrival:f.get('arrival'),departure:f.get('departure'),car:f.get('car')==='true',seats:Number(f.get('seats')||0),paid:f.get('paid')==='true'},i=f.get('idx');i===''?state.people.push(obj):state.people[+i]=obj;pd.close();save()};
+const gd=document.getElementById('genericDialog'),gf=document.getElementById('genericForm'),fields=document.getElementById('genericFields');let mode='';
+function openGeneric(m){mode=m;gf.reset();if(m==='activity'){genericTitle.textContent=t('Suggerisci attività','Suggest activity');fields.innerHTML='<label class="span2">'+t('Titolo','Title')+'<input name="title" required></label><label>'+t('Data','Date')+'<input name="date"></label><label>'+t('Proposta da','Suggested by')+'<input name="by"></label><label class="span2">'+t('Descrizione','Description')+'<textarea name="description"></textarea></label>'}if(m==='shopping'){genericTitle.textContent=t('Aggiungi prodotto','Add item');fields.innerHTML='<label class="span2">'+t('Prodotto','Item')+'<input name="name" required></label>'}if(m==='expense'){genericTitle.textContent=t('Aggiungi spesa','Add expense');fields.innerHTML='<label>'+t('Descrizione','Description')+'<input name="name" required></label><label>'+t('Importo','Amount')+'<input name="amount" type="number" step="0.01" required></label><label class="span2">'+t('Pagata da','Paid by')+'<input name="payer"></label>'}gd.showModal()}
+addActivity.onclick=()=>openGeneric('activity');addShopping.onclick=()=>openGeneric('shopping');addExpense.onclick=()=>openGeneric('expense');
+gf.onsubmit=e=>{if(e.submitter?.value!=='save')return;e.preventDefault();let f=new FormData(gf);if(mode==='activity')state.activities.push({title:f.get('title'),date:f.get('date'),by:f.get('by'),description:f.get('description'),votes:[]});if(mode==='shopping')state.shopping.push({name:f.get('name'),done:false});if(mode==='expense')state.expenses.push({name:f.get('name'),amount:Number(f.get('amount')),payer:f.get('payer')});gd.close();save()}
+window.vote=i=>{let a=state.activities[i],v=prompt(t('Il tuo nome','Your name'));if(!v)return;a.votes.includes(v)?a.votes=a.votes.filter(x=>x!==v):a.votes.push(v);save()}
+window.toggleShop=i=>{state.shopping[i].done=!state.shopping[i].done;save()}
+window.removeExpense=i=>{state.expenses.splice(i,1);save()}
+function render(){
+peopleList.innerHTML=state.people.map((p,i)=>`<div class="item"><div class="itemtop"><div><h3>${esc(p.name)}</h3><span class="badge">${p.paid?t('Pagato','Paid'):t('Da pagare','To pay')}</span></div><button class="btn secondary" onclick="editPerson(${i})">${t('Modifica','Edit')}</button></div><div class="two"><div class="mini"><small>${t('Arrivo','Arrival')}</small><b>${esc(p.arrival||t('Da aggiornare','To update'))}</b></div><div class="mini"><small>${t('Partenza','Departure')}</small><b>${esc(p.departure||t('Da aggiornare','To update'))}</b></div></div></div>`).join('');
+activityList.innerHTML=state.activities.map((a,i)=>`<div class="item"><div class="itemtop"><div><h3>${esc(a.title)}</h3><span class="muted">${esc(a.date||t('Da decidere','TBD'))}</span></div><span class="badge">${a.votes.length} 👍</span></div><p class="muted">${esc(a.description||'')}</p>${a.by?`<small>${t('Proposta da','Suggested by')}: ${esc(a.by)}</small>`:''}<div class="vote"><button onclick="vote(${i})">👍 ${t('Partecipo','I’m in')}</button><span>${esc(a.votes.join(', '))}</span></div></div>`).join('');
+carList.innerHTML=state.people.filter(p=>p.car||p.seats>0).map(p=>`<div class="item"><div class="itemtop"><h3>${esc(p.name)}</h3><span class="badge">${p.seats} ${t('posti','seats')}</span></div></div>`).join('')||`<div class="muted">${t('Nessuna auto inserita. Modifica le schede personali.','No cars added. Edit personal cards.')}</div>`;
+seatTotal.textContent=state.people.reduce((s,p)=>s+(Number(p.seats)||0),0);
+shoppingList.innerHTML=state.shopping.map((x,i)=>`<label class="check"><input type="checkbox" ${x.done?'checked':''} onchange="toggleShop(${i})"><span>${esc(x.name)}</span></label>`).join('');
+shoppingPct.textContent=state.shopping.length?Math.round(state.shopping.filter(x=>x.done).length/state.shopping.length*100)+'%':'0%';
+expenseList.innerHTML=state.expenses.map((x,i)=>`<div class="item"><div class="itemtop"><div><h3>${esc(x.name)}</h3><span class="muted">${t('Pagata da','Paid by')}: ${esc(x.payer||'—')}</span></div><div><b>€${Number(x.amount).toFixed(2)}</b> <button class="btn danger" onclick="removeExpense(${i})">×</button></div></div></div>`).join('')||`<div class="muted">${t('Nessuna spesa extra inserita.','No extra expenses added.')}</div>`;
+expenseTotal.textContent='€'+state.expenses.reduce((s,x)=>s+Number(x.amount||0),0).toFixed(2);
+}
+const trip=new Date('2026-07-29T00:00:00+02:00');countdown.textContent=Math.max(0,Math.ceil((trip-new Date())/86400000));
+it.onclick=()=>applyLang('it');en.onclick=()=>applyLang('en');applyLang(lang);
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+</script>
+</body></html>
