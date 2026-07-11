@@ -6,6 +6,8 @@
 <meta name="theme-color" content="#15382f">
 <link rel="manifest" href="manifest.webmanifest">
 <title>Sicilia 2026</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 :root{--bg:#f7f0e6;--card:#fffdf9;--ink:#1d2f29;--muted:#708078;--green:#15382f;--sage:#dce9df;--orange:#cf7451;--line:#e7ded2;--shadow:0 16px 45px rgba(45,48,38,.10)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink)}
@@ -26,6 +28,8 @@ section{display:none}section.active{display:block}.head{display:flex;justify-con
 .notice{padding:14px 16px;background:#e9f3ec;border-left:4px solid var(--green);border-radius:13px;color:#1d2f29;line-height:1.5}
 dialog{border:0;border-radius:22px;padding:0;max-width:620px;width:calc(100% - 24px);box-shadow:0 30px 80px rgba(0,0,0,.28)}dialog::backdrop{background:rgba(15,30,24,.6);backdrop-filter:blur(4px)}.modal{padding:22px}.modalhead{display:flex;justify-content:space-between}.modal h3{font-family:Georgia,serif;font-size:1.8rem;margin:0}.close{border:0;background:#eee7dc;width:38px;height:38px;border-radius:50%}.form{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:17px}.form label{display:grid;gap:6px;font-size:.82rem;font-weight:900}.form input,.form select,.form textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;background:#fbf8f3}.form textarea{min-height:85px}.span2{grid-column:1/-1}
 footer{text-align:center;color:var(--muted);font-size:.82rem;margin-top:30px}
+#restaurantMap{height:340px;border-radius:17px;overflow:hidden;border:1px solid var(--line);margin-bottom:14px}
+.leaflet-popup-content{font-family:Inter,sans-serif}
 .savebar{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:var(--green);color:white;padding:9px 18px;border-radius:18px;font-weight:800;font-size:.8rem;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transition:opacity .25s;pointer-events:none;z-index:20;max-width:90vw;text-align:center}
 .savebar.show{opacity:1}
 @media(max-width:780px){.card,.wide,.half{grid-column:1/-1}.head{display:block}.head p{margin-top:6px}.form{grid-template-columns:1fr}.span2{grid-column:auto}.hero{min-height:500px}}
@@ -45,6 +49,7 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;margin-top:30px}
 <button data-page="people" data-it="Partecipanti" data-en="People">Partecipanti</button>
 <button data-page="activities" data-it="Attività" data-en="Activities">Attività</button>
 <button data-page="cars" data-it="Auto" data-en="Cars">Auto</button>
+<button data-page="restaurants" data-it="Ristoranti" data-en="Restaurants">Ristoranti</button>
 <button data-page="shopping" data-it="Spesa" data-en="Shopping">Spesa</button>
 <button data-page="money" data-it="Soldi" data-en="Money">Soldi</button>
 <button data-page="awards" data-it="Premi" data-en="Awards">Premi</button>
@@ -69,6 +74,8 @@ data-en="✅ This version saves changes to Firebase: what one friend writes, eve
 
 <section id="cars"><div class="head"><div><div class="label" data-it="Trasporti" data-en="Transport">Trasporti</div><h2 data-it="Auto e posti" data-en="Cars and seats">Auto e posti</h2></div></div><div class="grid"><div class="card wide"><div id="carList" class="list"></div></div><div class="card"><div class="label" data-it="Posti totali" data-en="Total seats">Posti totali</div><strong class="big" id="seatTotal">0</strong><span data-it="disponibili" data-en="available">disponibili</span></div></div></section>
 
+<section id="restaurants"><div class="head"><div><div class="label" data-it="Proposte del gruppo" data-en="Group suggestions">Proposte del gruppo</div><h2 data-it="Ristoranti" data-en="Restaurants">Ristoranti</h2></div><button class="btn" id="addRestaurant" data-it="+ Ristorante" data-en="+ Restaurant">+ Ristorante</button></div><div id="restaurantMap"></div><div class="card full"><div id="restaurantList" class="list"></div></div></section>
+
 <section id="shopping"><div class="head"><div><div class="label" data-it="Lista condivisa" data-en="Shared list">Lista condivisa</div><h2 data-it="Spesa" data-en="Shopping">Spesa</h2></div><button class="btn" id="addShopping" data-it="+ Prodotto" data-en="+ Item">+ Prodotto</button></div><div class="grid"><div class="card wide"><div id="shoppingList"></div></div><div class="card"><div class="label" data-it="Completata" data-en="Completed">Completata</div><strong class="big" id="shoppingPct">0%</strong></div></div></section>
 
 <section id="money"><div class="head"><div><div class="label" data-it="Quote e spese" data-en="Shares and expenses">Quote e spese</div><h2 data-it="Soldi" data-en="Money">Soldi</h2></div><button class="btn" id="addExpense" data-it="+ Spesa" data-en="+ Expense">+ Spesa</button></div>
@@ -80,7 +87,7 @@ data-en="✅ This version saves changes to Firebase: what one friend writes, eve
   <div class="actions"><a class="btn" href="https://www.splitwise.com/join/3PmEfYVqpdy+1eb5zn?v=e" target="_blank" rel="noopener" data-it="💸 Apri il gruppo Splitwise" data-en="💸 Open Splitwise group">💸 Apri il gruppo Splitwise</a></div>
 </div><div class="card"><div class="label" data-it="Villa totale" data-en="Villa total">Villa totale</div><strong class="big">€4.250</strong></div><div class="card"><div class="label" data-it="Quota" data-en="Share">Quota</div><strong class="big">€303,57</strong></div><div class="card"><div class="label" data-it="Spese extra" data-en="Extra expenses">Spese extra</div><strong class="big" id="expenseTotal">€0</strong></div><div class="card full"><div id="expenseList" class="list"></div></div></div></section>
 
-<section id="awards"><div class="head"><div><div class="label" data-it="Ultima sera" data-en="Final night">Ultima sera</div><h2>🏆 Holiday Awards 2026</h2></div></div><div class="grid"><div class="card half"><h3>🍺 Biggest Drinker</h3><p class="muted" data-it="Chi ha bevuto di più?" data-en="Who drank the most?">Chi ha bevuto di più?</p></div><div class="card half"><h3>🌿 Biggest Weed Smoker</h3><p class="muted" data-it="Chi ha fumato più erba?" data-en="Who smoked the most weed?">Chi ha fumato più erba?</p></div><div class="card half"><h3>💩 King/Queen of the Toilet</h3><p class="muted" data-it="Chi ha fatto più la cacca?" data-en="Who pooped the most?">Chi ha fatto più la cacca?</p></div><div class="card half"><h3>💸 The Tightest Wallet</h3><p class="muted" data-it="Chi è stato il più tirchio?" data-en="Who was the stingiest?">Chi è stato il più tirchio?</p></div><div class="card half"><h3>🙄 Drama Queen / King</h3><p class="muted" data-it="Chi è stato il più polemico?" data-en="Who complained the most?">Chi è stato il più polemico?</p></div></div></section>
+<section id="awards"><div class="head"><div><div class="label" data-it="Ultima sera" data-en="Final night">Ultima sera</div><h2>🏆 Holiday Awards 2026</h2></div><button class="btn" id="addAward" data-it="+ Premio" data-en="+ Award">+ Premio</button></div><div class="card full"><div id="awardsList" class="list"></div></div></section>
 <footer>Sicilia 2026 · dati condivisi su Firebase</footer>
 </div>
 
@@ -94,12 +101,52 @@ data-en="✅ This version saves changes to Firebase: what one friend writes, eve
 <script>
 // URL del tuo Firebase Realtime Database
 const FIREBASE_URL = 'https://sicilia-2026-default-rtdb.firebaseio.com/state.json';
+const DEFAULT_AWARDS = [
+  {emoji:'🍺', title:'Biggest Drinker', descriptionIt:'Chi ha bevuto di più?', descriptionEn:'Who drank the most?', votes:[]},
+  {emoji:'🌿', title:'Biggest Weed Smoker', descriptionIt:'Chi ha fumato più erba?', descriptionEn:'Who smoked the most weed?', votes:[]},
+  {emoji:'💩', title:'King/Queen of the Toilet', descriptionIt:'Chi ha fatto più la cacca?', descriptionEn:'Who pooped the most?', votes:[]},
+  {emoji:'💸', title:'The Tightest Wallet', descriptionIt:'Chi è stato il più tirchio?', descriptionEn:'Who was the stingiest?', votes:[]},
+  {emoji:'🙄', title:'Drama Queen / King', descriptionIt:'Chi è stato il più polemico?', descriptionEn:'Who complained the most?', votes:[]}
+];
 
 let lang='it';
 let state=null;
 const t=(it,en)=>lang==='it'?it:en;const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 
-function showSaved(text){
+function extractCoords(url){
+  if(!url) return null;
+  let m = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if(m) return [parseFloat(m[1]), parseFloat(m[2])];
+  m = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+  if(m) return [parseFloat(m[1]), parseFloat(m[2])];
+  m = url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if(m) return [parseFloat(m[1]), parseFloat(m[2])];
+  return null;
+}
+let leafletMap=null, leafletMarkers=[];
+function initMap(){
+  if(leafletMap || !document.getElementById('restaurantMap') || typeof L==='undefined') return;
+  leafletMap = L.map('restaurantMap').setView([36.7887, 14.9127], 11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+  }).addTo(leafletMap);
+}
+function updateMapMarkers(){
+  if(!leafletMap) return;
+  leafletMarkers.forEach(m=>leafletMap.removeLayer(m));
+  leafletMarkers=[];
+  (state.restaurants||[]).forEach(r=>{
+    const c = extractCoords(r.link);
+    if(!c) return;
+    const marker = L.marker(c).addTo(leafletMap);
+    marker.bindPopup(`<b>${esc(r.name)}</b>${r.note?'<br>'+esc(r.note):''}`);
+    leafletMarkers.push(marker);
+  });
+  if(leafletMarkers.length){
+    const group = L.featureGroup(leafletMarkers);
+    leafletMap.fitBounds(group.getBounds().pad(0.2));
+  }
+}
   const bar=document.getElementById('savebar');
   document.getElementById('savebarText').textContent=text;
   bar.classList.add('show');
@@ -112,11 +159,19 @@ async function loadState(){
     const res = await fetch(FIREBASE_URL);
     if(!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    if(data){ state = data; return; }
+    if(data){
+      state = data;
+      if(!state.awards || !state.awards.length){
+        state.awards = DEFAULT_AWARDS;
+        await persistState(false);
+      }
+      return;
+    }
   }catch(e){
     console.error('loadState error:', e);
   }
   state = window.INITIAL_DATA;
+  state.awards = state.awards || DEFAULT_AWARDS;
   await persistState(false);
 }
 
@@ -137,21 +192,35 @@ async function persistState(notify=true){
 async function save(){ await persistState(true); render(); }
 
 function applyLang(l){lang=l;document.documentElement.lang=l;document.querySelectorAll('[data-it][data-en]').forEach(x=>x.textContent=x.dataset[l]);it.classList.toggle('active',l==='it');en.classList.toggle('active',l==='en');render()}
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('section').forEach(x=>x.classList.remove('active'));document.getElementById(b.dataset.page).classList.add('active')});
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('section').forEach(x=>x.classList.remove('active'));document.getElementById(b.dataset.page).classList.add('active');if(b.dataset.page==='restaurants'&&leafletMap)setTimeout(()=>leafletMap.invalidateSize(),50)});
 const pd=document.getElementById('personDialog'),pf=document.getElementById('personForm');
 addPerson.onclick=()=>{pf.reset();pf.idx.value='';pd.showModal()};
 window.editPerson=i=>{let p=state.people[i];pf.idx.value=i;['name','arrival','departure','seats'].forEach(k=>pf[k].value=p[k]??'');pf.car.value=String(!!p.car);pf.paid.value=String(!!p.paid);pd.showModal()};
 pf.onsubmit=e=>{if(e.submitter?.value!=='save')return;e.preventDefault();let f=new FormData(pf),obj={name:f.get('name'),arrival:f.get('arrival'),departure:f.get('departure'),car:f.get('car')==='true',seats:Number(f.get('seats')||0),paid:f.get('paid')==='true'},i=f.get('idx');i===''?state.people.push(obj):state.people[+i]=obj;pd.close();save()};
 const gd=document.getElementById('genericDialog'),gf=document.getElementById('genericForm'),fields=document.getElementById('genericFields');let mode='';
-function openGeneric(m){mode=m;gf.reset();if(m==='activity'){genericTitle.textContent=t('Suggerisci attività','Suggest activity');fields.innerHTML='<label class="span2">'+t('Titolo','Title')+'<input name="title" required></label><label>'+t('Data','Date')+'<input name="date"></label><label>'+t('Proposta da','Suggested by')+'<input name="by"></label><label class="span2">'+t('Descrizione','Description')+'<textarea name="description"></textarea></label>'}if(m==='shopping'){genericTitle.textContent=t('Aggiungi prodotto','Add item');fields.innerHTML='<label class="span2">'+t('Prodotto','Item')+'<input name="name" required></label>'}if(m==='expense'){genericTitle.textContent=t('Aggiungi spesa','Add expense');fields.innerHTML='<label>'+t('Descrizione','Description')+'<input name="name" required></label><label>'+t('Importo','Amount')+'<input name="amount" type="number" step="0.01" required></label><label class="span2">'+t('Pagata da','Paid by')+'<input name="payer"></label>'}gd.showModal()}
-addActivity.onclick=()=>openGeneric('activity');addShopping.onclick=()=>openGeneric('shopping');addExpense.onclick=()=>openGeneric('expense');
-gf.onsubmit=e=>{if(e.submitter?.value!=='save')return;e.preventDefault();let f=new FormData(gf);if(mode==='activity')state.activities.push({title:f.get('title'),date:f.get('date'),by:f.get('by'),description:f.get('description'),votes:[]});if(mode==='shopping')state.shopping.push({name:f.get('name'),done:false});if(mode==='expense')state.expenses.push({name:f.get('name'),amount:Number(f.get('amount')),payer:f.get('payer')});gd.close();save()}
+function openGeneric(m){mode=m;gf.reset();if(m==='activity'){genericTitle.textContent=t('Suggerisci attività','Suggest activity');fields.innerHTML='<label class="span2">'+t('Titolo','Title')+'<input name="title" required></label><label>'+t('Data','Date')+'<input name="date"></label><label>'+t('Proposta da','Suggested by')+'<input name="by"></label><label class="span2">'+t('Descrizione','Description')+'<textarea name="description"></textarea></label>'}if(m==='shopping'){genericTitle.textContent=t('Aggiungi prodotto','Add item');fields.innerHTML='<label class="span2">'+t('Prodotto','Item')+'<input name="name" required></label>'}if(m==='expense'){genericTitle.textContent=t('Aggiungi spesa','Add expense');fields.innerHTML='<label>'+t('Descrizione','Description')+'<input name="name" required></label><label>'+t('Importo','Amount')+'<input name="amount" type="number" step="0.01" required></label><label class="span2">'+t('Pagata da','Paid by')+'<input name="payer"></label>'}
+if(m==='award'){genericTitle.textContent=t('Aggiungi premio','Add award');fields.innerHTML='<label>'+t('Emoji','Emoji')+'<input name="emoji" placeholder="🏆"></label><label>'+t('Nome premio','Award name')+'<input name="title" required></label><label class="span2">'+t('Descrizione','Description')+'<input name="description" placeholder="'+t('Es. Chi ha...','E.g. Who...')+'"></label>'}
+if(m==='restaurant'){genericTitle.textContent=t('Proponi ristorante','Suggest restaurant');fields.innerHTML='<label class="span2">'+t('Nome ristorante','Restaurant name')+'<input name="name" required></label><label class="span2">'+t('Link Google Maps','Google Maps link')+'<input name="link" type="url" placeholder="https://maps.google.com/..." required></label><label>'+t('Proposto da','Suggested by')+'<input name="by"></label><label class="span2">'+t('Note','Notes')+'<input name="note" placeholder="'+t('Es. Pesce fresco, prenotare','E.g. Fresh fish, book ahead')+'"></label>'}
+gd.showModal()}
+addActivity.onclick=()=>openGeneric('activity');addShopping.onclick=()=>openGeneric('shopping');addExpense.onclick=()=>openGeneric('expense');addAward.onclick=()=>openGeneric('award');addRestaurant.onclick=()=>openGeneric('restaurant');
+gf.onsubmit=e=>{if(e.submitter?.value!=='save')return;e.preventDefault();let f=new FormData(gf);if(mode==='activity')state.activities.push({title:f.get('title'),date:f.get('date'),by:f.get('by'),description:f.get('description'),votes:[]});if(mode==='shopping')state.shopping.push({name:f.get('name'),done:false});if(mode==='expense')state.expenses.push({name:f.get('name'),amount:Number(f.get('amount')),payer:f.get('payer')});if(mode==='award')state.awards.push({emoji:f.get('emoji')||'🏆',title:f.get('title'),descriptionIt:f.get('description'),descriptionEn:f.get('description'),votes:[]});if(mode==='restaurant')state.restaurants.push({name:f.get('name'),link:f.get('link'),by:f.get('by'),note:f.get('note')});gd.close();save()}
 window.vote=i=>{let a=state.activities[i],v=prompt(t('Il tuo nome','Your name'));if(!v)return;a.votes=a.votes||[];a.votes.includes(v)?a.votes=a.votes.filter(x=>x!==v):a.votes.push(v);save()}
 window.toggleShop=i=>{state.shopping[i].done=!state.shopping[i].done;save()}
 window.removeExpense=i=>{state.expenses.splice(i,1);save()}
+window.voteAward=i=>{
+  let a=state.awards[i];
+  a.votes=a.votes||[];
+  let voter=prompt(t('Il tuo nome','Your name'));
+  if(!voter)return;
+  let nominee=prompt(t('Chi vota per questo premio?','Who do you nominate?'));
+  if(!nominee)return;
+  a.votes=a.votes.filter(v=>v.voter.toLowerCase()!==voter.toLowerCase());
+  a.votes.push({voter,nominee});
+  save();
+}
 function render(){
 if(!state) return;
-state.people=state.people||[];state.activities=state.activities||[];state.shopping=state.shopping||[];state.expenses=state.expenses||[];
+state.people=state.people||[];state.activities=state.activities||[];state.shopping=state.shopping||[];state.expenses=state.expenses||[];state.awards=state.awards||DEFAULT_AWARDS;state.restaurants=state.restaurants||[];
 peopleList.innerHTML=state.people.map((p,i)=>`<div class="item"><div class="itemtop"><div><h3>${esc(p.name)}</h3><span class="badge">${p.paid?t('Pagato','Paid'):t('Da pagare','To pay')}</span></div><button class="btn secondary" onclick="editPerson(${i})">${t('Modifica','Edit')}</button></div><div class="two"><div class="mini"><small>${t('Arrivo','Arrival')}</small><b>${esc(p.arrival||t('Da aggiornare','To update'))}</b></div><div class="mini"><small>${t('Partenza','Departure')}</small><b>${esc(p.departure||t('Da aggiornare','To update'))}</b></div></div></div>`).join('');
 activityList.innerHTML=state.activities.map((a,i)=>{const votes=a.votes||[];return `<div class="item"><div class="itemtop"><div><h3>${esc(a.title)}</h3><span class="muted">${esc(a.date||t('Da decidere','TBD'))}</span></div><span class="badge">${votes.length} 👍</span></div><p class="muted">${esc(a.description||'')}</p>${a.by?`<small>${t('Proposta da','Suggested by')}: ${esc(a.by)}</small>`:''}<div class="vote"><button onclick="vote(${i})">👍 ${t('Partecipo','I’m in')}</button><span>${esc(votes.join(', '))}</span></div></div>`}).join('');
 carList.innerHTML=state.people.filter(p=>p.car||p.seats>0).map(p=>`<div class="item"><div class="itemtop"><h3>${esc(p.name)}</h3><span class="badge">${p.seats} ${t('posti','seats')}</span></div></div>`).join('')||`<div class="muted">${t('Nessuna auto inserita. Modifica le schede personali.','No cars added. Edit personal cards.')}</div>`;
@@ -160,6 +229,18 @@ shoppingList.innerHTML=state.shopping.map((x,i)=>`<label class="check"><input ty
 shoppingPct.textContent=state.shopping.length?Math.round(state.shopping.filter(x=>x.done).length/state.shopping.length*100)+'%':'0%';
 expenseList.innerHTML=state.expenses.map((x,i)=>`<div class="item"><div class="itemtop"><div><h3>${esc(x.name)}</h3><span class="muted">${t('Pagata da','Paid by')}: ${esc(x.payer||'—')}</span></div><div><b>€${Number(x.amount).toFixed(2)}</b> <button class="btn danger" onclick="removeExpense(${i})">×</button></div></div></div>`).join('')||`<div class="muted">${t('Nessuna spesa extra inserita.','No extra expenses added.')}</div>`;
 expenseTotal.textContent='€'+state.expenses.reduce((s,x)=>s+Number(x.amount||0),0).toFixed(2);
+awardsList.innerHTML=state.awards.map((a,i)=>{
+  const votes=a.votes||[];
+  const tally={};
+  votes.forEach(v=>{tally[v.nominee]=(tally[v.nominee]||0)+1});
+  const ranked=Object.entries(tally).sort((x,y)=>y[1]-x[1]);
+  const leaderHtml=ranked.length?ranked.map(([name,c])=>`<span class="badge">${esc(name)} · ${c}</span>`).join(' '):`<span class="muted">${t('Nessun voto ancora','No votes yet')}</span>`;
+  const desc=lang==='it'?(a.descriptionIt||a.description||''):(a.descriptionEn||a.description||'');
+  return `<div class="item"><div class="itemtop"><div><h3>${esc(a.emoji||'🏆')} ${esc(a.title)}</h3><p class="muted" style="margin:2px 0 0">${esc(desc)}</p></div></div><div class="vote">${leaderHtml}</div><div class="actions"><button class="btn secondary" onclick="voteAward(${i})">🗳️ ${t('Vota','Vote')}</button></div></div>`;
+}).join('');
+restaurantList.innerHTML=state.restaurants.map(r=>`<div class="item"><div class="itemtop"><div><h3>${esc(r.name)}</h3>${r.note?`<p class="muted" style="margin:2px 0 0">${esc(r.note)}</p>`:''}${r.by?`<small>${t('Proposto da','Suggested by')}: ${esc(r.by)}</small>`:''}</div><a class="btn secondary" href="${esc(r.link)}" target="_blank" rel="noopener">📍 Maps</a></div></div>`).join('')||`<div class="muted">${t('Nessun ristorante proposto ancora.','No restaurants suggested yet.')}</div>`;
+initMap();
+updateMapMarkers();
 }
 const trip=new Date('2026-07-29T00:00:00+02:00');countdown.textContent=Math.max(0,Math.ceil((trip-new Date())/86400000));
 it.onclick=()=>applyLang('it');en.onclick=()=>applyLang('en');
