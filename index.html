@@ -23,9 +23,11 @@ section{display:none}section.active{display:block}.head{display:flex;justify-con
 .list{display:grid;gap:10px}.item{background:white;border:1px solid var(--line);border-radius:17px;padding:14px}.itemtop{display:flex;justify-content:space-between;gap:10px;align-items:start}.item h3{margin:0 0 5px}.badge{background:var(--sage);padding:6px 9px;border-radius:99px;font-size:.7rem;font-weight:900}.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.mini{background:#faf6ef;border-radius:11px;padding:9px}.mini small{display:block;color:var(--muted);margin-bottom:3px}
 .vote{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:12px}.vote button{border:0;background:var(--sage);padding:8px 11px;border-radius:10px;font-weight:900}
 .check{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}.check:last-child{border:0}.check input{width:20px;height:20px}
-.notice{padding:14px 16px;background:#fff2e9;border-left:4px solid var(--orange);border-radius:13px;color:#75422e;line-height:1.5}
+.notice{padding:14px 16px;background:#e9f3ec;border-left:4px solid var(--green);border-radius:13px;color:#1d2f29;line-height:1.5}
 dialog{border:0;border-radius:22px;padding:0;max-width:620px;width:calc(100% - 24px);box-shadow:0 30px 80px rgba(0,0,0,.28)}dialog::backdrop{background:rgba(15,30,24,.6);backdrop-filter:blur(4px)}.modal{padding:22px}.modalhead{display:flex;justify-content:space-between}.modal h3{font-family:Georgia,serif;font-size:1.8rem;margin:0}.close{border:0;background:#eee7dc;width:38px;height:38px;border-radius:50%}.form{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:17px}.form label{display:grid;gap:6px;font-size:.82rem;font-weight:900}.form input,.form select,.form textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;background:#fbf8f3}.form textarea{min-height:85px}.span2{grid-column:1/-1}
 footer{text-align:center;color:var(--muted);font-size:.82rem;margin-top:30px}
+.savebar{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:var(--green);color:white;padding:9px 18px;border-radius:99px;font-weight:800;font-size:.8rem;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transition:opacity .25s;pointer-events:none;z-index:20}
+.savebar.show{opacity:1}
 @media(max-width:780px){.card,.wide,.half{grid-column:1/-1}.head{display:block}.head p{margin-top:6px}.form{grid-template-columns:1fr}.span2{grid-column:auto}.hero{min-height:500px}}
 </style>
 </head>
@@ -56,8 +58,8 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;margin-top:30px}
 <div class="card dark"><div class="label">Will</div><strong class="big">28/07</strong><span data-it="arrivo alle 10:00" data-en="arrival at 10:00">arrivo alle 10:00</span></div>
 <div class="card wide"><div class="label" data-it="Casa base" data-en="Home base">Casa base</div><h2 data-it="Villa a Ispica" data-en="Villa in Ispica">Villa a Ispica</h2><p class="muted" data-it="Prenotazione confermata per 14 persone." data-en="Booking confirmed for 14 people.">Prenotazione confermata per 14 persone.</p><div class="actions"><a class="btn" href="https://www.booking.com/Share-5o20nk" target="_blank" data-it="Apri Booking" data-en="Open Booking">Apri Booking</a><a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Ispica%2C%20RG" target="_blank" data-it="Apri mappa" data-en="Open map">Apri mappa</a><a class="btn" href="https://www.splitwise.com/join/3PmEfYVqpdy+1eb5zn?v=e" target="_blank" rel="noopener" data-it="💸 Apri Splitwise" data-en="💸 Open Splitwise">💸 Apri Splitwise</a></div></div>
 <div class="card"><div class="label" data-it="Countdown" data-en="Countdown">Countdown</div><strong class="big" id="countdown">—</strong><span data-it="giorni alla villa" data-en="days to the villa">giorni alla villa</span></div>
-<div class="card full"><div class="notice" data-it="Questa versione salva le modifiche sul dispositivo. Per condividerle tra tutti serve collegare un database esterno."
-data-en="This version saves changes on the device. Sharing updates across all phones requires an external database.">Questa versione salva le modifiche sul dispositivo. Per condividerle tra tutti serve collegare un database esterno.</div></div>
+<div class="card full"><div class="notice" data-it="✅ Questa versione salva le modifiche su Firebase: quello che scrive un amico lo vedono tutti gli altri, in tempo reale."
+data-en="✅ This version saves changes to Firebase: what one friend writes, everyone else sees, in real time.">✅ Questa versione salva le modifiche su Firebase: quello che scrive un amico lo vedono tutti gli altri, in tempo reale.</div></div>
 </div>
 </section>
 
@@ -79,8 +81,10 @@ data-en="This version saves changes on the device. Sharing updates across all ph
 </div><div class="card"><div class="label" data-it="Villa totale" data-en="Villa total">Villa totale</div><strong class="big">€4.250</strong></div><div class="card"><div class="label" data-it="Quota" data-en="Share">Quota</div><strong class="big">€303,57</strong></div><div class="card"><div class="label" data-it="Spese extra" data-en="Extra expenses">Spese extra</div><strong class="big" id="expenseTotal">€0</strong></div><div class="card full"><div id="expenseList" class="list"></div></div></div></section>
 
 <section id="awards"><div class="head"><div><div class="label" data-it="Ultima sera" data-en="Final night">Ultima sera</div><h2>🏆 Holiday Awards 2026</h2></div></div><div class="grid"><div class="card half"><h3>🍺 Biggest Drinker</h3><p class="muted" data-it="Chi ha bevuto di più?" data-en="Who drank the most?">Chi ha bevuto di più?</p></div><div class="card half"><h3>🌿 Biggest Weed Smoker</h3><p class="muted" data-it="Chi ha fumato più erba?" data-en="Who smoked the most weed?">Chi ha fumato più erba?</p></div><div class="card half"><h3>💩 King/Queen of the Toilet</h3><p class="muted" data-it="Chi ha fatto più la cacca?" data-en="Who pooped the most?">Chi ha fatto più la cacca?</p></div><div class="card half"><h3>💸 The Tightest Wallet</h3><p class="muted" data-it="Chi è stato il più tirchio?" data-en="Who was the stingiest?">Chi è stato il più tirchio?</p></div><div class="card half"><h3>🙄 Drama Queen / King</h3><p class="muted" data-it="Chi è stato il più polemico?" data-en="Who complained the most?">Chi è stato il più polemico?</p></div></div></section>
-<footer>Sicilia 2026 · PWA bilingue</footer>
+<footer>Sicilia 2026 · dati condivisi su Firebase</footer>
 </div>
+
+<div class="savebar" id="savebar">💾 <span id="savebarText">Salvato</span></div>
 
 <dialog id="personDialog"><form method="dialog" class="modal" id="personForm"><div class="modalhead"><h3 data-it="Modifica persona" data-en="Edit person">Modifica persona</h3><button class="close" value="cancel">×</button></div><input type="hidden" name="idx"><div class="form"><label class="span2"><span data-it="Nome" data-en="Name">Nome</span><input name="name" required></label><label><span data-it="Arrivo" data-en="Arrival">Arrivo</span><input name="arrival"></label><label><span data-it="Partenza" data-en="Departure">Partenza</span><input name="departure"></label><label><span data-it="Auto" data-en="Car">Auto</span><select name="car"><option value="false">No</option><option value="true">Sì</option></select></label><label><span data-it="Posti liberi" data-en="Free seats">Posti liberi</span><input name="seats" type="number" min="0" max="8"></label><label><span data-it="Villa pagata" data-en="Villa paid">Villa pagata</span><select name="paid"><option value="true">Sì</option><option value="false">No</option></select></label></div><div class="actions"><button class="btn" value="save" data-it="Salva" data-en="Save">Salva</button><button class="btn secondary" value="cancel" data-it="Annulla" data-en="Cancel">Annulla</button></div></form></dialog>
 
@@ -88,11 +92,43 @@ data-en="This version saves changes on the device. Sharing updates across all ph
 
 <script src="data.js"></script>
 <script>
-let lang=localStorage.getItem('siciliaLang')||'it';
-let state=JSON.parse(localStorage.getItem('siciliaFinalState')||'null')||window.INITIAL_DATA;
+// URL del tuo Firebase Realtime Database
+const FIREBASE_URL = 'https://sicilia-2026-default-rtdb.firebaseio.com/state.json';
+
+let lang='it';
+let state=null;
 const t=(it,en)=>lang==='it'?it:en;const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-function save(){localStorage.setItem('siciliaFinalState',JSON.stringify(state));render()}
-function applyLang(l){lang=l;localStorage.setItem('siciliaLang',l);document.documentElement.lang=l;document.querySelectorAll('[data-it][data-en]').forEach(x=>x.textContent=x.dataset[l]);it.classList.toggle('active',l==='it');en.classList.toggle('active',l==='en');render()}
+
+function showSaved(text){
+  const bar=document.getElementById('savebar');
+  document.getElementById('savebarText').textContent=text;
+  bar.classList.add('show');
+  clearTimeout(showSaved._t);
+  showSaved._t=setTimeout(()=>bar.classList.remove('show'),1600);
+}
+
+async function loadState(){
+  try{
+    const res = await fetch(FIREBASE_URL);
+    const data = await res.json();
+    if(data){ state = data; return; }
+  }catch(e){ /* network error, fall through to seed */ }
+  state = window.INITIAL_DATA;
+  await persistState(false);
+}
+
+async function persistState(notify=true){
+  try{
+    await fetch(FIREBASE_URL, { method:'PUT', body: JSON.stringify(state) });
+    if(notify) showSaved(t('Salvato per tutti','Saved for everyone'));
+  }catch(e){
+    showSaved(t('Errore di rete, riprova','Network error, retry'));
+  }
+}
+
+async function save(){ await persistState(true); render(); }
+
+function applyLang(l){lang=l;document.documentElement.lang=l;document.querySelectorAll('[data-it][data-en]').forEach(x=>x.textContent=x.dataset[l]);it.classList.toggle('active',l==='it');en.classList.toggle('active',l==='en');render()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('section').forEach(x=>x.classList.remove('active'));document.getElementById(b.dataset.page).classList.add('active')});
 const pd=document.getElementById('personDialog'),pf=document.getElementById('personForm');
 addPerson.onclick=()=>{pf.reset();pf.idx.value='';pd.showModal()};
@@ -106,6 +142,7 @@ window.vote=i=>{let a=state.activities[i],v=prompt(t('Il tuo nome','Your name'))
 window.toggleShop=i=>{state.shopping[i].done=!state.shopping[i].done;save()}
 window.removeExpense=i=>{state.expenses.splice(i,1);save()}
 function render(){
+if(!state) return;
 peopleList.innerHTML=state.people.map((p,i)=>`<div class="item"><div class="itemtop"><div><h3>${esc(p.name)}</h3><span class="badge">${p.paid?t('Pagato','Paid'):t('Da pagare','To pay')}</span></div><button class="btn secondary" onclick="editPerson(${i})">${t('Modifica','Edit')}</button></div><div class="two"><div class="mini"><small>${t('Arrivo','Arrival')}</small><b>${esc(p.arrival||t('Da aggiornare','To update'))}</b></div><div class="mini"><small>${t('Partenza','Departure')}</small><b>${esc(p.departure||t('Da aggiornare','To update'))}</b></div></div></div>`).join('');
 activityList.innerHTML=state.activities.map((a,i)=>`<div class="item"><div class="itemtop"><div><h3>${esc(a.title)}</h3><span class="muted">${esc(a.date||t('Da decidere','TBD'))}</span></div><span class="badge">${a.votes.length} 👍</span></div><p class="muted">${esc(a.description||'')}</p>${a.by?`<small>${t('Proposta da','Suggested by')}: ${esc(a.by)}</small>`:''}<div class="vote"><button onclick="vote(${i})">👍 ${t('Partecipo','I’m in')}</button><span>${esc(a.votes.join(', '))}</span></div></div>`).join('');
 carList.innerHTML=state.people.filter(p=>p.car||p.seats>0).map(p=>`<div class="item"><div class="itemtop"><h3>${esc(p.name)}</h3><span class="badge">${p.seats} ${t('posti','seats')}</span></div></div>`).join('')||`<div class="muted">${t('Nessuna auto inserita. Modifica le schede personali.','No cars added. Edit personal cards.')}</div>`;
@@ -116,7 +153,11 @@ expenseList.innerHTML=state.expenses.map((x,i)=>`<div class="item"><div class="i
 expenseTotal.textContent='€'+state.expenses.reduce((s,x)=>s+Number(x.amount||0),0).toFixed(2);
 }
 const trip=new Date('2026-07-29T00:00:00+02:00');countdown.textContent=Math.max(0,Math.ceil((trip-new Date())/86400000));
-it.onclick=()=>applyLang('it');en.onclick=()=>applyLang('en');applyLang(lang);
-if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+it.onclick=()=>applyLang('it');en.onclick=()=>applyLang('en');
+
+(async function init(){
+  await loadState();
+  applyLang('it');
+})();
 </script>
 </body></html>
