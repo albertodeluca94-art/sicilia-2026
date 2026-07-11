@@ -323,11 +323,42 @@ window.voteAward=i=>{
   a.votes.push({voter,nominee});
   save();
 }
-function render(){
+const translationCache={};
+async function translateText(text){
+  if(!text || !text.trim()) return text;
+  if(translationCache[text]) return translationCache[text];
+  try{
+    const res=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(text)+'&langpair=it|en');
+    const data=await res.json();
+    const out=data?.responseData?.translatedText;
+    translationCache[text]=out&&out.toLowerCase()!=='undefined'?out:text;
+  }catch(e){
+    translationCache[text]=text;
+  }
+  return translationCache[text];
+}
+function trText(text){
+  if(lang!=='en'||!text) return text||'';
+  return translationCache[text]||text;
+}
+async function preloadTranslations(){
+  if(lang!=='en') return;
+  const texts=[];
+  (state.activities||[]).forEach(a=>{texts.push(a.title,a.description,a.date)});
+  (state.restaurants||[]).forEach(r=>{texts.push(r.name,r.note)});
+  (state.awards||[]).forEach(a=>{if(!a.descriptionEn||a.descriptionEn===a.descriptionIt)texts.push(a.title,a.descriptionIt||a.description)});
+  (state.shopping||[]).forEach(s=>{texts.push(s.name)});
+  const unique=[...new Set(texts.filter(x=>x&&x.trim()))].filter(x=>!translationCache[x]);
+  if(!unique.length) return;
+  await Promise.all(unique.map(translateText));
+}
+
+async function render(){
 if(!state) return;
+await preloadTranslations();
 state.people=state.people||[];state.activities=state.activities||[];state.shopping=state.shopping||[];state.expenses=state.expenses||[];state.awards=state.awards||DEFAULT_AWARDS;state.restaurants=state.restaurants||[];
 peopleList.innerHTML=state.people.map((p,i)=>`<div class="item"><div class="itemtop"><div><h3>${esc(p.name)}</h3><span class="badge">${p.paid?t('Pagato','Paid'):t('Da pagare','To pay')}</span></div><button class="btn secondary" onclick="editPerson(${i})">${t('Modifica','Edit')}</button></div><div class="two"><div class="mini"><small>${t('Arrivo','Arrival')}</small><b>${esc(p.arrival||t('Da aggiornare','To update'))}</b></div><div class="mini"><small>${t('Partenza','Departure')}</small><b>${esc(p.departure||t('Da aggiornare','To update'))}</b></div></div></div>`).join('');
-activityList.innerHTML=state.activities.map((a,i)=>{const votes=a.votes||[];return `<div class="item"><div class="itemtop"><div><h3>${esc(a.title)}</h3><span class="muted">${esc(a.date||t('Da decidere','TBD'))}</span></div><span class="badge">${votes.length} 👍</span></div><p class="muted">${esc(a.description||'')}</p>${a.by?`<small>${t('Proposta da','Suggested by')}: ${esc(a.by)}</small>`:''}<div class="vote"><button onclick="vote(${i})">👍 ${t('Partecipo','I’m in')}</button><span>${esc(votes.join(', '))}</span></div></div>`}).join('');
+activityList.innerHTML=state.activities.map((a,i)=>{const votes=a.votes||[];return `<div class="item"><div class="itemtop"><div><h3>${esc(trText(a.title))}</h3><span class="muted">${esc(a.date?trText(a.date):t('Da decidere','TBD'))}</span></div><span class="badge">${votes.length} 👍</span></div><p class="muted">${esc(trText(a.description)||'')}</p>${a.by?`<small>${t('Proposta da','Suggested by')}: ${esc(a.by)}</small>`:''}<div class="vote"><button onclick="vote(${i})">👍 ${t('Partecipo','I’m in')}</button><span>${esc(votes.join(', '))}</span></div></div>`}).join('');
 const CAR_GROUPS=[{key:'tere',it:'Macchina Tere',en:"Tere's car"},{key:'noleggio1',it:'Macchina a noleggio 1',en:'Rental car 1'},{key:'noleggio2',it:'Macchina a noleggio 2',en:'Rental car 2'},{key:'autobus',it:'🚌 Autobus',en:'🚌 Bus'}];
 function renderCarBlock(containerId, field, timeField){
   const container = document.getElementById(containerId);
@@ -341,7 +372,7 @@ function renderCarBlock(containerId, field, timeField){
 }
 renderCarBlock('carGroupsArrival','carGroup','arrival');
 renderCarBlock('carGroupsReturn','carGroupReturn','departure');
-shoppingList.innerHTML=state.shopping.map((x,i)=>`<label class="check"><input type="checkbox" ${x.done?'checked':''} onchange="toggleShop(${i})"><span>${esc(x.name)}</span></label>`).join('');
+shoppingList.innerHTML=state.shopping.map((x,i)=>`<label class="check"><input type="checkbox" ${x.done?'checked':''} onchange="toggleShop(${i})"><span>${esc(trText(x.name))}</span></label>`).join('');
 shoppingPct.textContent=state.shopping.length?Math.round(state.shopping.filter(x=>x.done).length/state.shopping.length*100)+'%':'0%';
 expenseList.innerHTML=state.expenses.map((x,i)=>`<div class="item"><div class="itemtop"><div><h3>${esc(x.name)}</h3><span class="muted">${t('Pagata da','Paid by')}: ${esc(x.payer||'—')}</span></div><div><b>€${Number(x.amount).toFixed(2)}</b> <button class="btn danger" onclick="removeExpense(${i})">×</button></div></div></div>`).join('')||`<div class="muted">${t('Nessuna spesa extra inserita.','No extra expenses added.')}</div>`;
 expenseTotal.textContent='€'+state.expenses.reduce((s,x)=>s+Number(x.amount||0),0).toFixed(2);
@@ -351,10 +382,13 @@ awardsList.innerHTML=state.awards.map((a,i)=>{
   votes.forEach(v=>{tally[v.nominee]=(tally[v.nominee]||0)+1});
   const ranked=Object.entries(tally).sort((x,y)=>y[1]-x[1]);
   const leaderHtml=ranked.length?ranked.map(([name,c])=>`<span class="badge">${esc(name)} · ${c}</span>`).join(' '):`<span class="muted">${t('Nessun voto ancora','No votes yet')}</span>`;
-  const desc=lang==='it'?(a.descriptionIt||a.description||''):(a.descriptionEn||a.description||'');
-  return `<div class="item"><div class="itemtop"><div><h3>${esc(a.emoji||'🏆')} ${esc(a.title)}</h3><p class="muted" style="margin:2px 0 0">${esc(desc)}</p></div></div><div class="vote">${leaderHtml}</div><div class="actions"><button class="btn secondary" onclick="voteAward(${i})">🗳️ ${t('Vota','Vote')}</button></div></div>`;
+  const rawDesc=a.descriptionIt||a.description||'';
+  const needsTranslation=lang==='en'&&(!a.descriptionEn||a.descriptionEn===a.descriptionIt);
+  const desc=needsTranslation?trText(rawDesc):(lang==='it'?rawDesc:(a.descriptionEn||rawDesc));
+  const title=needsTranslation?trText(a.title):a.title;
+  return `<div class="item"><div class="itemtop"><div><h3>${esc(a.emoji||'🏆')} ${esc(title)}</h3><p class="muted" style="margin:2px 0 0">${esc(desc)}</p></div></div><div class="vote">${leaderHtml}</div><div class="actions"><button class="btn secondary" onclick="voteAward(${i})">🗳️ ${t('Vota','Vote')}</button></div></div>`;
 }).join('');
-restaurantList.innerHTML=state.restaurants.map(r=>`<div class="item"><div class="itemtop"><div><h3>${esc(r.name)}</h3>${r.note?`<p class="muted" style="margin:2px 0 0">${esc(r.note)}</p>`:''}${r.by?`<small>${t('Proposto da','Suggested by')}: ${esc(r.by)}</small>`:''}</div><a class="btn secondary" href="${esc(r.link)}" target="_blank" rel="noopener">📍 Maps</a></div></div>`).join('')||`<div class="muted">${t('Nessun ristorante proposto ancora.','No restaurants suggested yet.')}</div>`;
+restaurantList.innerHTML=state.restaurants.map(r=>`<div class="item"><div class="itemtop"><div><h3>${esc(r.name)}</h3>${r.note?`<p class="muted" style="margin:2px 0 0">${esc(trText(r.note))}</p>`:''}${r.by?`<small>${t('Proposto da','Suggested by')}: ${esc(r.by)}</small>`:''}</div><a class="btn secondary" href="${esc(r.link)}" target="_blank" rel="noopener">📍 Maps</a></div></div>`).join('')||`<div class="muted">${t('Nessun ristorante proposto ancora.','No restaurants suggested yet.')}</div>`;
 initMap();
 updateMapMarkers();
 renderHouseInfo();
