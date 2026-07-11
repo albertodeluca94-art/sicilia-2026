@@ -50,6 +50,10 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;margin-top:30px}
 <button data-page="activities" data-it="Attività" data-en="Activities">Attività</button>
 <button data-page="cars" data-it="Auto" data-en="Cars">Auto</button>
 <button data-page="restaurants" data-it="Ristoranti" data-en="Restaurants">Ristoranti</button>
+<button data-page="weather" data-it="Meteo" data-en="Weather">Meteo</button>
+<button data-page="bus" data-it="Bus" data-en="Bus">Bus</button>
+<button data-page="house" data-it="Info Casa" data-en="House Info">Info Casa</button>
+<button data-page="photos" data-it="Foto" data-en="Photos">Foto</button>
 <button data-page="shopping" data-it="Spesa" data-en="Shopping">Spesa</button>
 <button data-page="money" data-it="Soldi" data-en="Money">Soldi</button>
 <button data-page="awards" data-it="Premi" data-en="Awards">Premi</button>
@@ -72,9 +76,39 @@ data-en="✅ This version saves changes to Firebase: what one friend writes, eve
 
 <section id="activities"><div class="head"><div><div class="label" data-it="Proposte e voti" data-en="Suggestions and votes">Proposte e voti</div><h2 data-it="Attività" data-en="Activities">Attività</h2></div><button class="btn" id="addActivity" data-it="+ Suggerisci attività" data-en="+ Suggest activity">+ Suggerisci attività</button></div><div class="card full"><div id="activityList" class="list"></div></div></section>
 
-<section id="cars"><div class="head"><div><div class="label" data-it="Trasporti" data-en="Transport">Trasporti</div><h2 data-it="Auto e posti" data-en="Cars and seats">Auto e posti</h2></div></div><div class="grid"><div class="card wide"><div id="carList" class="list"></div></div><div class="card"><div class="label" data-it="Posti totali" data-en="Total seats">Posti totali</div><strong class="big" id="seatTotal">0</strong><span data-it="disponibili" data-en="available">disponibili</span></div></div></section>
+<section id="cars"><div class="head"><div><div class="label" data-it="Trasporti" data-en="Transport">Trasporti</div><h2 data-it="Auto e posti" data-en="Cars and seats">Auto e posti</h2></div></div><p class="muted" style="margin:0 3px 14px" data-it="Servono 3 auto: quella di Teresa + 2 a noleggio. Chi non si incastra con gli orari può prendere l'autobus. Assegnate le persone da 'Modifica' nella pagina Partecipanti." data-en="We need 3 cars: Teresa's + 2 rentals. Anyone whose times don't line up can take the bus. Assign people from 'Edit' on the People page.">Servono 3 auto: quella di Teresa + 2 a noleggio. Chi non si incastra con gli orari può prendere l'autobus. Assegnate le persone da 'Modifica' nella pagina Partecipanti.</p>
+<h3 style="margin:18px 3px 10px" data-it="✈️ Andata (29 luglio)" data-en="✈️ Arrival (July 29)">✈️ Andata (29 luglio)</h3>
+<div class="grid" id="carGroupsArrival"></div>
+<h3 style="margin:26px 3px 10px" data-it="🛫 Ritorno (3 agosto)" data-en="🛫 Departure (Aug 3)">🛫 Ritorno (3 agosto)</h3>
+<div class="grid" id="carGroupsReturn"></div>
+</section>
 
 <section id="restaurants"><div class="head"><div><div class="label" data-it="Proposte del gruppo" data-en="Group suggestions">Proposte del gruppo</div><h2 data-it="Ristoranti" data-en="Restaurants">Ristoranti</h2></div><button class="btn" id="addRestaurant" data-it="+ Ristorante" data-en="+ Restaurant">+ Ristorante</button></div><div id="restaurantMap"></div><div class="card full"><div id="restaurantList" class="list"></div></div></section>
+
+<section id="weather"><div class="head"><div><div class="label" data-it="Ispica, 29 lug – 3 ago" data-en="Ispica, Jul 29 – Aug 3">Ispica, 29 lug – 3 ago</div><h2 data-it="Meteo" data-en="Weather">Meteo</h2></div></div><div class="grid" id="weatherGrid"></div><p class="muted" id="weatherNote" style="margin:4px 3px"></p></section>
+
+<section id="bus"><div class="head"><div><div class="label" data-it="Se gli orari non combaciano" data-en="If the times don't line up">Se gli orari non combaciano</div><h2 data-it="Come arrivare in bus" data-en="How to get there by bus">Come arrivare in bus</h2></div></div>
+<div class="grid">
+<div class="card full">
+<div class="label" data-it="Linea diretta" data-en="Direct line">Linea diretta</div>
+<h3 data-it="AST — Aeroporto Catania → Ispica" data-en="AST — Catania Airport → Ispica">AST — Aeroporto Catania → Ispica</h3>
+<p class="muted" data-it="C'è un autobus AST diretto dall'aeroporto di Catania a Ispica (linea Modica–Pozzallo–Ispica–Rosolini–Noto–Avola–Aeroporto–Catania), circa 1h30 di viaggio. La fermata a Ispica è alla Rotatoria, con corse indicativamente 2-3 volte al giorno." data-en="There's a direct AST bus from Catania airport to Ispica (Modica–Pozzallo–Ispica–Rosolini–Noto–Avola–Airport–Catania line), about 1h30 travel time. The Ispica stop is at the Rotatoria, with roughly 2-3 runs a day.">C'è un autobus AST diretto dall'aeroporto di Catania a Ispica (linea Modica–Pozzallo–Ispica–Rosolini–Noto–Avola–Aeroporto–Catania), circa 1h30 di viaggio. La fermata a Ispica è alla Rotatoria, con corse indicativamente 2-3 volte al giorno.</p>
+<div class="actions"><a class="btn" href="https://www.aziendasicilianatrasporti.it" target="_blank" rel="noopener" data-it="Orari aggiornati AST" data-en="Updated AST timetable">Orari aggiornati AST</a></div>
+</div>
+<div class="card full notice">
+<b data-it="⚠️ Controllate sempre gli orari aggiornati" data-en="⚠️ Always check the updated timetable">⚠️ Controllate sempre gli orari aggiornati</b><br>
+<span data-it="Gli orari AST cambiano spesso tra feriali/festivi e stagione estiva. Prima di contare sul bus, verificate su aziendasicilianatrasporti.it o chiamando lo 091 620 8111." data-en="AST timetables often change between weekdays/holidays and summer season. Before relying on the bus, check aziendasicilianatrasporti.it or call 091 620 8111.">Gli orari AST cambiano spesso tra feriali/festivi e stagione estiva. Prima di contare sul bus, verificate su aziendasicilianatrasporti.it o chiamando lo 091 620 8111.</span>
+</div>
+<div class="card full accent">
+<div class="label" data-it="Idea per chi non combacia" data-en="Idea for mismatched times">Idea per chi non combacia</div>
+<p data-it="Se l'orario del bus non coincide con quando serve, si può fare un mix: chi ha la macchina libera in quel momento accompagna la persona alla fermata Rotatoria di Ispica (o la va a prendere lì), invece di tutto il tragitto fino/dall'aeroporto. È molto più vicino alla villa." data-en="If the bus timing doesn't line up, you can mix it: whoever has a free car at that moment drops the person at the Ispica Rotatoria stop (or picks them up there), instead of doing the whole trip to/from the airport. It's much closer to the villa.">Se l'orario del bus non coincide con quando serve, si può fare un mix: chi ha la macchina libera in quel momento accompagna la persona alla fermata Rotatoria di Ispica (o la va a prendere lì), invece di tutto il tragitto fino/dall'aeroporto. È molto più vicino alla villa.</p>
+</div>
+</div>
+</section>
+
+<section id="house"><div class="head"><div><div class="label" data-it="Tutto sulla villa" data-en="All about the villa">Tutto sulla villa</div><h2 data-it="Info Casa" data-en="House Info">Info Casa</h2></div><button class="btn" id="editHouse" data-it="Modifica" data-en="Edit">Modifica</button></div><div class="grid" id="houseInfoCard"></div></section>
+
+<section id="photos"><div class="head"><div><div class="label" data-it="Ricordi del gruppo" data-en="Group memories">Ricordi del gruppo</div><h2 data-it="Foto" data-en="Photos">Foto</h2></div></div><div class="card full" id="photoCard"></div></section>
 
 <section id="shopping"><div class="head"><div><div class="label" data-it="Lista condivisa" data-en="Shared list">Lista condivisa</div><h2 data-it="Spesa" data-en="Shopping">Spesa</h2></div><button class="btn" id="addShopping" data-it="+ Prodotto" data-en="+ Item">+ Prodotto</button></div><div class="grid"><div class="card wide"><div id="shoppingList"></div></div><div class="card"><div class="label" data-it="Completata" data-en="Completed">Completata</div><strong class="big" id="shoppingPct">0%</strong></div></div></section>
 
@@ -93,7 +127,7 @@ data-en="✅ This version saves changes to Firebase: what one friend writes, eve
 
 <div class="savebar" id="savebar">💾 <span id="savebarText">Salvato</span></div>
 
-<dialog id="personDialog"><form method="dialog" class="modal" id="personForm"><div class="modalhead"><h3 data-it="Modifica persona" data-en="Edit person">Modifica persona</h3><button type="button" class="close" onclick="this.closest('dialog').close()">×</button></div><input type="hidden" name="idx"><div class="form"><label class="span2"><span data-it="Nome" data-en="Name">Nome</span><input name="name" required></label><label><span data-it="Arrivo" data-en="Arrival">Arrivo</span><input name="arrival"></label><label><span data-it="Partenza" data-en="Departure">Partenza</span><input name="departure"></label><label><span data-it="Auto" data-en="Car">Auto</span><select name="car"><option value="false">No</option><option value="true">Sì</option></select></label><label><span data-it="Posti liberi" data-en="Free seats">Posti liberi</span><input name="seats" type="number" min="0" max="8"></label><label><span data-it="Villa pagata" data-en="Villa paid">Villa pagata</span><select name="paid"><option value="true">Sì</option><option value="false">No</option></select></label></div><div class="actions"><button class="btn" value="save" data-it="Salva" data-en="Save">Salva</button><button type="button" class="btn secondary" onclick="this.closest('dialog').close()" data-it="Annulla" data-en="Cancel">Annulla</button></div></form></dialog>
+<dialog id="personDialog"><form method="dialog" class="modal" id="personForm"><div class="modalhead"><h3 data-it="Modifica persona" data-en="Edit person">Modifica persona</h3><button type="button" class="close" onclick="this.closest('dialog').close()">×</button></div><input type="hidden" name="idx"><div class="form"><label class="span2"><span data-it="Nome" data-en="Name">Nome</span><input name="name" required></label><label><span data-it="Arrivo" data-en="Arrival">Arrivo</span><input name="arrival"></label><label><span data-it="Partenza" data-en="Departure">Partenza</span><input name="departure"></label><label><span data-it="Macchina andata" data-en="Car (arrival)">Macchina andata</span><select name="carGroup"><option value="" data-it="— Non assegnato —" data-en="— Not assigned —">— Non assegnato —</option><option value="tere" data-it="Macchina Tere" data-en="Tere's car">Macchina Tere</option><option value="noleggio1" data-it="Macchina a noleggio 1" data-en="Rental car 1">Macchina a noleggio 1</option><option value="noleggio2" data-it="Macchina a noleggio 2" data-en="Rental car 2">Macchina a noleggio 2</option><option value="autobus" data-it="🚌 Autobus" data-en="🚌 Bus">🚌 Autobus</option></select></label><label><span data-it="Macchina ritorno" data-en="Car (departure)">Macchina ritorno</span><select name="carGroupReturn"><option value="" data-it="— Non assegnato —" data-en="— Not assigned —">— Non assegnato —</option><option value="tere" data-it="Macchina Tere" data-en="Tere's car">Macchina Tere</option><option value="noleggio1" data-it="Macchina a noleggio 1" data-en="Rental car 1">Macchina a noleggio 1</option><option value="noleggio2" data-it="Macchina a noleggio 2" data-en="Rental car 2">Macchina a noleggio 2</option><option value="autobus" data-it="🚌 Autobus" data-en="🚌 Bus">🚌 Autobus</option></select></label><label><span data-it="Villa pagata" data-en="Villa paid">Villa pagata</span><select name="paid"><option value="true">Sì</option><option value="false">No</option></select></label></div><div class="actions"><button class="btn" value="save" data-it="Salva" data-en="Save">Salva</button><button type="button" class="btn secondary" onclick="this.closest('dialog').close()" data-it="Annulla" data-en="Cancel">Annulla</button></div></form></dialog>
 
 <dialog id="genericDialog"><form method="dialog" class="modal" id="genericForm"><div class="modalhead"><h3 id="genericTitle">Aggiungi</h3><button type="button" class="close" onclick="this.closest('dialog').close()">×</button></div><div id="genericFields" class="form"></div><div class="actions"><button class="btn" value="save" data-it="Salva" data-en="Save">Salva</button><button type="button" class="btn secondary" onclick="this.closest('dialog').close()" data-it="Annulla" data-en="Cancel">Annulla</button></div></form></dialog>
 
@@ -148,6 +182,33 @@ function updateMapMarkers(){
   }
 }
 
+const TRIP_DATES = ['2026-07-29','2026-07-30','2026-07-31','2026-08-01','2026-08-02','2026-08-03'];
+const WEATHER_ICONS = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌦️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
+let weatherLoaded=false;
+async function loadWeather(){
+  if(weatherLoaded) return;
+  const grid=document.getElementById('weatherGrid');
+  const note=document.getElementById('weatherNote');
+  try{
+    const res=await fetch('https://api.open-meteo.com/v1/forecast?latitude=36.7887&longitude=14.9127&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode&timezone=Europe/Rome&forecast_days=16');
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    const byDate={};
+    data.daily.time.forEach((d,i)=>{byDate[d]={max:data.daily.temperature_2m_max[i],min:data.daily.temperature_2m_min[i],rain:data.daily.precipitation_probability_max[i],code:data.daily.weathercode[i]}});
+    grid.innerHTML=TRIP_DATES.map(d=>{
+      const w=byDate[d];
+      const label=new Date(d+'T12:00:00').toLocaleDateString(lang==='it'?'it-IT':'en-GB',{weekday:'short',day:'numeric',month:'short'});
+      if(!w) return `<div class="card"><div class="label">${label}</div><span class="muted" style="display:block;margin-top:17px">${t('Non ancora disponibile','Not available yet')}</span></div>`;
+      const icon=WEATHER_ICONS[w.code]||'🌡️';
+      return `<div class="card"><div class="label">${label}</div><strong class="big">${icon} ${Math.round(w.max)}°</strong><span class="muted">${t('min','min')} ${Math.round(w.min)}° · 🌧️ ${w.rain}%</span></div>`;
+    }).join('');
+    note.textContent=t('Le previsioni si aggiornano man mano che ci si avvicina alle date (disponibili nei 16 giorni prima).','Forecasts update as the dates get closer (available within 16 days ahead).');
+    weatherLoaded=true;
+  }catch(e){
+    grid.innerHTML=`<div class="card full muted">${t('Impossibile caricare le previsioni al momento.','Could not load the forecast right now.')}</div>`;
+  }
+}
+
 function showSaved(text){
   const bar=document.getElementById('savebar');
   document.getElementById('savebarText').textContent=text;
@@ -194,21 +255,63 @@ async function persistState(notify=true){
 async function save(){ await persistState(true); render(); }
 
 function applyLang(l){lang=l;document.documentElement.lang=l;document.querySelectorAll('[data-it][data-en]').forEach(x=>x.textContent=x.dataset[l]);it.classList.toggle('active',l==='it');en.classList.toggle('active',l==='en');render()}
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('section').forEach(x=>x.classList.remove('active'));document.getElementById(b.dataset.page).classList.add('active');if(b.dataset.page==='restaurants'&&leafletMap)setTimeout(()=>leafletMap.invalidateSize(),50)});
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('section').forEach(x=>x.classList.remove('active'));document.getElementById(b.dataset.page).classList.add('active');if(b.dataset.page==='restaurants'&&leafletMap)setTimeout(()=>leafletMap.invalidateSize(),50);if(b.dataset.page==='weather')loadWeather()});
 const pd=document.getElementById('personDialog'),pf=document.getElementById('personForm');
 addPerson.onclick=()=>{pf.reset();pf.idx.value='';pd.showModal()};
-window.editPerson=i=>{let p=state.people[i];pf.idx.value=i;['name','arrival','departure','seats'].forEach(k=>pf[k].value=p[k]??'');pf.car.value=String(!!p.car);pf.paid.value=String(!!p.paid);pd.showModal()};
-pf.onsubmit=e=>{if(e.submitter?.value!=='save')return;e.preventDefault();let f=new FormData(pf),obj={name:f.get('name'),arrival:f.get('arrival'),departure:f.get('departure'),car:f.get('car')==='true',seats:Number(f.get('seats')||0),paid:f.get('paid')==='true'},i=f.get('idx');i===''?state.people.push(obj):state.people[+i]=obj;pd.close();save()};
+window.editPerson=i=>{let p=state.people[i];pf.idx.value=i;['name','arrival','departure'].forEach(k=>pf[k].value=p[k]??'');pf.carGroup.value=p.carGroup||'';pf.carGroupReturn.value=p.carGroupReturn||'';pf.paid.value=String(!!p.paid);pd.showModal()};
+pf.onsubmit=e=>{if(e.submitter?.value!=='save')return;e.preventDefault();let f=new FormData(pf),obj={name:f.get('name'),arrival:f.get('arrival'),departure:f.get('departure'),carGroup:f.get('carGroup')||'',carGroupReturn:f.get('carGroupReturn')||'',paid:f.get('paid')==='true'},i=f.get('idx');i===''?state.people.push(obj):state.people[+i]=obj;pd.close();save()};
 const gd=document.getElementById('genericDialog'),gf=document.getElementById('genericForm'),fields=document.getElementById('genericFields');let mode='';
 function openGeneric(m){mode=m;gf.reset();if(m==='activity'){genericTitle.textContent=t('Suggerisci attività','Suggest activity');fields.innerHTML='<label class="span2">'+t('Titolo','Title')+'<input name="title" required></label><label>'+t('Data','Date')+'<input name="date"></label><label>'+t('Proposta da','Suggested by')+'<input name="by"></label><label class="span2">'+t('Descrizione','Description')+'<textarea name="description"></textarea></label>'}if(m==='shopping'){genericTitle.textContent=t('Aggiungi prodotto','Add item');fields.innerHTML='<label class="span2">'+t('Prodotto','Item')+'<input name="name" required></label>'}if(m==='expense'){genericTitle.textContent=t('Aggiungi spesa','Add expense');fields.innerHTML='<label>'+t('Descrizione','Description')+'<input name="name" required></label><label>'+t('Importo','Amount')+'<input name="amount" type="number" step="0.01" required></label><label class="span2">'+t('Pagata da','Paid by')+'<input name="payer"></label>'}
 if(m==='award'){genericTitle.textContent=t('Aggiungi premio','Add award');fields.innerHTML='<label>'+t('Emoji','Emoji')+'<input name="emoji" placeholder="🏆"></label><label>'+t('Nome premio','Award name')+'<input name="title" required></label><label class="span2">'+t('Descrizione','Description')+'<input name="description" placeholder="'+t('Es. Chi ha...','E.g. Who...')+'"></label>'}
 if(m==='restaurant'){genericTitle.textContent=t('Proponi ristorante','Suggest restaurant');fields.innerHTML='<label class="span2">'+t('Nome ristorante','Restaurant name')+'<input name="name" required></label><label class="span2">'+t('Link Google Maps','Google Maps link')+'<input name="link" type="url" placeholder="https://maps.google.com/..." required></label><label>'+t('Proposto da','Suggested by')+'<input name="by"></label><label class="span2">'+t('Note','Notes')+'<input name="note" placeholder="'+t('Es. Pesce fresco, prenotare','E.g. Fresh fish, book ahead')+'"></label>'}
 gd.showModal()}
 addActivity.onclick=()=>openGeneric('activity');addShopping.onclick=()=>openGeneric('shopping');addExpense.onclick=()=>openGeneric('expense');addAward.onclick=()=>openGeneric('award');addRestaurant.onclick=()=>openGeneric('restaurant');
-gf.onsubmit=e=>{if(e.submitter?.value!=='save')return;e.preventDefault();let f=new FormData(gf);if(mode==='activity')state.activities.push({title:f.get('title'),date:f.get('date'),by:f.get('by'),description:f.get('description'),votes:[]});if(mode==='shopping')state.shopping.push({name:f.get('name'),done:false});if(mode==='expense')state.expenses.push({name:f.get('name'),amount:Number(f.get('amount')),payer:f.get('payer')});if(mode==='award')state.awards.push({emoji:f.get('emoji')||'🏆',title:f.get('title'),descriptionIt:f.get('description'),descriptionEn:f.get('description'),votes:[]});if(mode==='restaurant')state.restaurants.push({name:f.get('name'),link:f.get('link'),by:f.get('by'),note:f.get('note')});gd.close();save()}
+gf.onsubmit=e=>{if(e.submitter?.value!=='save')return;e.preventDefault();let f=new FormData(gf);if(mode==='activity')state.activities.push({title:f.get('title'),date:f.get('date'),by:f.get('by'),description:f.get('description'),votes:[]});if(mode==='shopping')state.shopping.push({name:f.get('name'),done:false});if(mode==='expense')state.expenses.push({name:f.get('name'),amount:Number(f.get('amount')),payer:f.get('payer')});if(mode==='award')state.awards.push({emoji:f.get('emoji')||'🏆',title:f.get('title'),descriptionIt:f.get('description'),descriptionEn:f.get('description'),votes:[]});if(mode==='restaurant')state.restaurants.push({name:f.get('name'),link:f.get('link'),by:f.get('by'),note:f.get('note')});if(mode==='house')state.houseInfo={wifiName:f.get('wifiName'),wifiPassword:f.get('wifiPassword'),checkin:f.get('checkin'),checkout:f.get('checkout'),rules:f.get('rules'),emergency:f.get('emergency')};gd.close();save()}
 window.vote=i=>{let a=state.activities[i],v=prompt(t('Il tuo nome','Your name'));if(!v)return;a.votes=a.votes||[];a.votes.includes(v)?a.votes=a.votes.filter(x=>x!==v):a.votes.push(v);save()}
 window.toggleShop=i=>{state.shopping[i].done=!state.shopping[i].done;save()}
 window.removeExpense=i=>{state.expenses.splice(i,1);save()}
+
+editHouse.onclick=()=>{
+  const h=state.houseInfo||{};
+  genericTitle.textContent=t('Modifica info casa','Edit house info');
+  fields.innerHTML='<label>'+t('Nome WiFi','WiFi name')+'<input name="wifiName" value="'+esc(h.wifiName||'')+'"></label><label>'+t('Password WiFi','WiFi password')+'<input name="wifiPassword" value="'+esc(h.wifiPassword||'')+'"></label><label>'+t('Check-in','Check-in')+'<input name="checkin" value="'+esc(h.checkin||'')+'"></label><label>'+t('Check-out','Check-out')+'<input name="checkout" value="'+esc(h.checkout||'')+'"></label><label class="span2">'+t('Regole della casa','House rules')+'<textarea name="rules">'+esc(h.rules||'')+'</textarea></label><label class="span2">'+t('Numeri utili','Useful numbers')+'<input name="emergency" value="'+esc(h.emergency||'')+'" placeholder="'+t('Es. Proprietario: 333...','E.g. Owner: 333...')+'"></label>';
+  mode='house';
+  gd.showModal();
+};
+
+function renderHouseInfo(){
+  const h=state.houseInfo||{};
+  const has=h.wifiName||h.checkin||h.rules;
+  houseInfoCard.innerHTML = has ? `
+    <div class="card half"><div class="label">📶 WiFi</div><strong class="big" style="font-size:1.4rem">${esc(h.wifiName||'—')}</strong><span class="muted">${esc(h.wifiPassword||t('nessuna password salvata','no password saved'))}</span></div>
+    <div class="card half"><div class="label">🔑 Check-in / Check-out</div><strong class="big" style="font-size:1.4rem">${esc(h.checkin||'—')}</strong><span class="muted">${t('uscita','out')}: ${esc(h.checkout||'—')}</span></div>
+    <div class="card full"><div class="label" data-it="Regole della casa" data-en="House rules">${t('Regole della casa','House rules')}</div><p style="white-space:pre-wrap">${esc(h.rules||t('Nessuna regola inserita.','No rules added.'))}</p></div>
+    <div class="card full accent"><div class="label">📞 ${t('Numeri utili','Useful numbers')}</div><p>${esc(h.emergency||t('Nessun numero inserito.','No numbers added.'))}</p></div>
+  ` : `<div class="card full muted">${t('Nessuna informazione ancora. Tocca "Modifica" per aggiungerle.','No info yet. Tap "Edit" to add it.')}</div>`;
+}
+
+window.editPhotoLink=()=>{
+  const current=state.photoLink||'';
+  const link=prompt(t("Incolla il link dell'album Google Photos condiviso","Paste the shared Google Photos album link"), current);
+  if(link===null) return;
+  state.photoLink=link.trim();
+  save();
+};
+
+function renderPhotos(){
+  const link=state.photoLink;
+  photoCard.innerHTML = link ? `
+    <div class="label" data-it="Album condiviso" data-en="Shared album">${t('Album condiviso','Shared album')}</div>
+    <h2 style="margin:8px 0">📸 ${t('Foto della vacanza','Trip photos')}</h2>
+    <p class="muted">${t('Tutte le foto del gruppo in un unico posto.',"All the group's photos in one place.")}</p>
+    <div class="actions"><a class="btn" href="${esc(link)}" target="_blank" rel="noopener">${t('Apri album','Open album')}</a><button class="btn secondary" onclick="editPhotoLink()">${t('Modifica link','Edit link')}</button></div>
+  ` : `
+    <div class="label">📸 ${t('Album condiviso','Shared album')}</div>
+    <h2 style="margin:8px 0">${t('Nessun album ancora','No album yet')}</h2>
+    <p class="muted">${t('Crea un album Google Photos condiviso e incolla qui il link.','Create a shared Google Photos album and paste the link here.')}</p>
+    <div class="actions"><button class="btn" onclick="editPhotoLink()">${t('+ Aggiungi link album','+ Add album link')}</button></div>
+  `;
+}
 window.voteAward=i=>{
   let a=state.awards[i];
   a.votes=a.votes||[];
@@ -225,8 +328,19 @@ if(!state) return;
 state.people=state.people||[];state.activities=state.activities||[];state.shopping=state.shopping||[];state.expenses=state.expenses||[];state.awards=state.awards||DEFAULT_AWARDS;state.restaurants=state.restaurants||[];
 peopleList.innerHTML=state.people.map((p,i)=>`<div class="item"><div class="itemtop"><div><h3>${esc(p.name)}</h3><span class="badge">${p.paid?t('Pagato','Paid'):t('Da pagare','To pay')}</span></div><button class="btn secondary" onclick="editPerson(${i})">${t('Modifica','Edit')}</button></div><div class="two"><div class="mini"><small>${t('Arrivo','Arrival')}</small><b>${esc(p.arrival||t('Da aggiornare','To update'))}</b></div><div class="mini"><small>${t('Partenza','Departure')}</small><b>${esc(p.departure||t('Da aggiornare','To update'))}</b></div></div></div>`).join('');
 activityList.innerHTML=state.activities.map((a,i)=>{const votes=a.votes||[];return `<div class="item"><div class="itemtop"><div><h3>${esc(a.title)}</h3><span class="muted">${esc(a.date||t('Da decidere','TBD'))}</span></div><span class="badge">${votes.length} 👍</span></div><p class="muted">${esc(a.description||'')}</p>${a.by?`<small>${t('Proposta da','Suggested by')}: ${esc(a.by)}</small>`:''}<div class="vote"><button onclick="vote(${i})">👍 ${t('Partecipo','I’m in')}</button><span>${esc(votes.join(', '))}</span></div></div>`}).join('');
-carList.innerHTML=state.people.filter(p=>p.car||p.seats>0).map(p=>`<div class="item"><div class="itemtop"><h3>${esc(p.name)}</h3><span class="badge">${p.seats} ${t('posti','seats')}</span></div></div>`).join('')||`<div class="muted">${t('Nessuna auto inserita. Modifica le schede personali.','No cars added. Edit personal cards.')}</div>`;
-seatTotal.textContent=state.people.reduce((s,p)=>s+(Number(p.seats)||0),0);
+const CAR_GROUPS=[{key:'tere',it:'Macchina Tere',en:"Tere's car"},{key:'noleggio1',it:'Macchina a noleggio 1',en:'Rental car 1'},{key:'noleggio2',it:'Macchina a noleggio 2',en:'Rental car 2'},{key:'autobus',it:'🚌 Autobus',en:'🚌 Bus'}];
+function renderCarBlock(containerId, field, timeField){
+  const container = document.getElementById(containerId);
+  container.innerHTML = CAR_GROUPS.map(g=>{
+    const members = state.people.filter(p=>p[field]===g.key);
+    const rows = members.length ? members.map(p=>`<div class="mini"><small>${esc(p[timeField]||t('Orario da aggiornare','Time to update'))}</small><b>${esc(p.name)}</b></div>`).join('') : `<span class="muted">${t('Nessuno assegnato ancora','Nobody assigned yet')}</span>`;
+    return `<div class="card wide"><h3>${g.key==='autobus'?'':'🚗 '}${lang==='it'?g.it:g.en}</h3><span class="badge">${members.length} ${t('persone','people')}</span><div class="two" style="grid-template-columns:1fr;margin-top:11px">${rows}</div></div>`;
+  }).join('');
+  const unassigned = state.people.filter(p=>!p[field]);
+  container.innerHTML += `<div class="card full accent"><h3>${t('Da assegnare','Not yet assigned')}</h3><div class="two" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">${unassigned.length?unassigned.map(p=>`<div class="mini"><small>${esc(p[timeField]||'—')}</small><b>${esc(p.name)}</b></div>`).join(''):`<span class="muted">${t('Tutti assegnati! 🎉','Everyone assigned! 🎉')}</span>`}</div></div>`;
+}
+renderCarBlock('carGroupsArrival','carGroup','arrival');
+renderCarBlock('carGroupsReturn','carGroupReturn','departure');
 shoppingList.innerHTML=state.shopping.map((x,i)=>`<label class="check"><input type="checkbox" ${x.done?'checked':''} onchange="toggleShop(${i})"><span>${esc(x.name)}</span></label>`).join('');
 shoppingPct.textContent=state.shopping.length?Math.round(state.shopping.filter(x=>x.done).length/state.shopping.length*100)+'%':'0%';
 expenseList.innerHTML=state.expenses.map((x,i)=>`<div class="item"><div class="itemtop"><div><h3>${esc(x.name)}</h3><span class="muted">${t('Pagata da','Paid by')}: ${esc(x.payer||'—')}</span></div><div><b>€${Number(x.amount).toFixed(2)}</b> <button class="btn danger" onclick="removeExpense(${i})">×</button></div></div></div>`).join('')||`<div class="muted">${t('Nessuna spesa extra inserita.','No extra expenses added.')}</div>`;
@@ -243,6 +357,8 @@ awardsList.innerHTML=state.awards.map((a,i)=>{
 restaurantList.innerHTML=state.restaurants.map(r=>`<div class="item"><div class="itemtop"><div><h3>${esc(r.name)}</h3>${r.note?`<p class="muted" style="margin:2px 0 0">${esc(r.note)}</p>`:''}${r.by?`<small>${t('Proposto da','Suggested by')}: ${esc(r.by)}</small>`:''}</div><a class="btn secondary" href="${esc(r.link)}" target="_blank" rel="noopener">📍 Maps</a></div></div>`).join('')||`<div class="muted">${t('Nessun ristorante proposto ancora.','No restaurants suggested yet.')}</div>`;
 initMap();
 updateMapMarkers();
+renderHouseInfo();
+renderPhotos();
 }
 const trip=new Date('2026-07-29T00:00:00+02:00');countdown.textContent=Math.max(0,Math.ceil((trip-new Date())/86400000));
 it.onclick=()=>applyLang('it');en.onclick=()=>applyLang('en');
