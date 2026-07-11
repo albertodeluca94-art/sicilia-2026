@@ -147,6 +147,8 @@ function updateMapMarkers(){
     leafletMap.fitBounds(group.getBounds().pad(0.2));
   }
 }
+
+function showSaved(text){
   const bar=document.getElementById('savebar');
   document.getElementById('savebarText').textContent=text;
   bar.classList.add('show');
