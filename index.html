@@ -51,6 +51,7 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;margin-top:30px}
 <button data-page="cars" data-it="Auto" data-en="Cars">Auto</button>
 <button data-page="restaurants" data-it="Ristoranti" data-en="Restaurants">Ristoranti</button>
 <button data-page="weather" data-it="Meteo" data-en="Weather">Meteo</button>
+<button data-page="calendar" data-it="Calendario" data-en="Calendar">Calendario</button>
 <button data-page="bus" data-it="Bus" data-en="Bus">Bus</button>
 <button data-page="house" data-it="Info Casa" data-en="House Info">Info Casa</button>
 <button data-page="photos" data-it="Foto" data-en="Photos">Foto</button>
@@ -86,6 +87,8 @@ data-en="✅ This version saves changes to Firebase: what one friend writes, eve
 <section id="restaurants"><div class="head"><div><div class="label" data-it="Proposte del gruppo" data-en="Group suggestions">Proposte del gruppo</div><h2 data-it="Ristoranti" data-en="Restaurants">Ristoranti</h2></div><button class="btn" id="addRestaurant" data-it="+ Ristorante" data-en="+ Restaurant">+ Ristorante</button></div><div id="restaurantMap"></div><div class="card full"><div id="restaurantList" class="list"></div></div></section>
 
 <section id="weather"><div class="head"><div><div class="label" data-it="Ispica, 29 lug – 3 ago" data-en="Ispica, Jul 29 – Aug 3">Ispica, 29 lug – 3 ago</div><h2 data-it="Meteo" data-en="Weather">Meteo</h2></div></div><div class="grid" id="weatherGrid"></div><p class="muted" id="weatherNote" style="margin:4px 3px"></p></section>
+
+<section id="calendar"><div class="head"><div><div class="label" data-it="Chi fa cosa e quando" data-en="Who does what and when">Chi fa cosa e quando</div><h2 data-it="Calendario" data-en="Calendar">Calendario</h2></div></div><p class="muted" style="margin:0 3px 14px" data-it="Per assegnare un'attività a un giorno, aprila da 'Attività' → Modifica → scegli il giorno." data-en="To assign an activity to a day, open it from 'Activities' → Edit → pick the day.">Per assegnare un'attività a un giorno, aprila da 'Attività' → Modifica → scegli il giorno.</p><div id="calendarGrid"></div></section>
 
 <section id="bus"><div class="head"><div><div class="label" data-it="Se gli orari non combaciano" data-en="If the times don't line up">Se gli orari non combaciano</div><h2 data-it="Come arrivare in bus" data-en="How to get there by bus">Come arrivare in bus</h2></div></div>
 <div class="grid">
@@ -185,28 +188,32 @@ function updateMapMarkers(){
 const TRIP_DATES = ['2026-07-29','2026-07-30','2026-07-31','2026-08-01','2026-08-02','2026-08-03'];
 const WEATHER_ICONS = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌦️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
 let weatherLoaded=false;
+let weatherByDate={};
+function dayLabel(d){return new Date(d+'T12:00:00').toLocaleDateString(lang==='it'?'it-IT':'en-GB',{weekday:'short',day:'numeric',month:'short'})}
 async function loadWeather(){
   if(weatherLoaded) return;
-  const grid=document.getElementById('weatherGrid');
-  const note=document.getElementById('weatherNote');
   try{
     const res=await fetch('https://api.open-meteo.com/v1/forecast?latitude=36.7887&longitude=14.9127&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode&timezone=Europe/Rome&forecast_days=16');
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data=await res.json();
-    const byDate={};
-    data.daily.time.forEach((d,i)=>{byDate[d]={max:data.daily.temperature_2m_max[i],min:data.daily.temperature_2m_min[i],rain:data.daily.precipitation_probability_max[i],code:data.daily.weathercode[i]}});
-    grid.innerHTML=TRIP_DATES.map(d=>{
-      const w=byDate[d];
-      const label=new Date(d+'T12:00:00').toLocaleDateString(lang==='it'?'it-IT':'en-GB',{weekday:'short',day:'numeric',month:'short'});
-      if(!w) return `<div class="card"><div class="label">${label}</div><span class="muted" style="display:block;margin-top:17px">${t('Non ancora disponibile','Not available yet')}</span></div>`;
-      const icon=WEATHER_ICONS[w.code]||'🌡️';
-      return `<div class="card"><div class="label">${label}</div><strong class="big">${icon} ${Math.round(w.max)}°</strong><span class="muted">${t('min','min')} ${Math.round(w.min)}° · 🌧️ ${w.rain}%</span></div>`;
-    }).join('');
-    note.textContent=t('Le previsioni si aggiornano man mano che ci si avvicina alle date (disponibili nei 16 giorni prima).','Forecasts update as the dates get closer (available within 16 days ahead).');
+    data.daily.time.forEach((d,i)=>{weatherByDate[d]={max:data.daily.temperature_2m_max[i],min:data.daily.temperature_2m_min[i],rain:data.daily.precipitation_probability_max[i],code:data.daily.weathercode[i]}});
     weatherLoaded=true;
-  }catch(e){
-    grid.innerHTML=`<div class="card full muted">${t('Impossibile caricare le previsioni al momento.','Could not load the forecast right now.')}</div>`;
-  }
+  }catch(e){ /* weatherByDate stays empty, cards will show "not available" */ }
+  renderWeatherGrid();
+  renderCalendar();
+}
+function renderWeatherGrid(){
+  const grid=document.getElementById('weatherGrid');
+  const note=document.getElementById('weatherNote');
+  if(!grid) return;
+  grid.innerHTML=TRIP_DATES.map(d=>{
+    const w=weatherByDate[d];
+    const label=dayLabel(d);
+    if(!w) return `<div class="card"><div class="label">${label}</div><span class="muted" style="display:block;margin-top:17px">${t('Non ancora disponibile','Not available yet')}</span></div>`;
+    const icon=WEATHER_ICONS[w.code]||'🌡️';
+    return `<div class="card"><div class="label">${label}</div><strong class="big">${icon} ${Math.round(w.max)}°</strong><span class="muted">${t('min','min')} ${Math.round(w.min)}° · 🌧️ ${w.rain}%</span></div>`;
+  }).join('');
+  if(note) note.textContent=t('Le previsioni si aggiornano man mano che ci si avvicina alle date (disponibili nei 16 giorni prima).','Forecasts update as the dates get closer (available within 16 days ahead).');
 }
 
 function showSaved(text){
@@ -262,12 +269,12 @@ window.editPerson=i=>{let p=state.people[i];pf.idx.value=i;['name','arrival','de
 pf.onsubmit=e=>{if(e.submitter?.value!=='save')return;e.preventDefault();let f=new FormData(pf),obj={name:f.get('name'),arrival:f.get('arrival'),departure:f.get('departure'),carGroup:f.get('carGroup')||'',carGroupReturn:f.get('carGroupReturn')||'',paid:f.get('paid')==='true'},i=f.get('idx');i===''?state.people.push(obj):state.people[+i]=obj;pd.close();save()};
 const gd=document.getElementById('genericDialog'),gf=document.getElementById('genericForm'),fields=document.getElementById('genericFields');let mode='';
 let editIndex=null;
-function openGeneric(m,idx){mode=m;editIndex=(idx!==undefined)?idx:null;gf.reset();if(m==='activity'){const a=editIndex!==null?state.activities[editIndex]:{};genericTitle.textContent=editIndex!==null?t('Modifica attività','Edit activity'):t('Suggerisci attività','Suggest activity');fields.innerHTML='<label class="span2">'+t('Titolo','Title')+'<input name="title" required value="'+esc(a.title||'')+'"></label><label>'+t('Data','Date')+'<input name="date" value="'+esc(a.date||'')+'"></label><label>'+t('Proposta da','Suggested by')+'<input name="by" value="'+esc(a.by||'')+'"></label><label class="span2">'+t('Descrizione','Description')+'<textarea name="description">'+esc(a.description||'')+'</textarea></label>'}if(m==='shopping'){genericTitle.textContent=t('Aggiungi prodotto','Add item');fields.innerHTML='<label class="span2">'+t('Prodotto','Item')+'<input name="name" required></label>'}if(m==='expense'){genericTitle.textContent=t('Aggiungi spesa','Add expense');fields.innerHTML='<label>'+t('Descrizione','Description')+'<input name="name" required></label><label>'+t('Importo','Amount')+'<input name="amount" type="number" step="0.01" required></label><label class="span2">'+t('Pagata da','Paid by')+'<input name="payer"></label>'}
+function openGeneric(m,idx){mode=m;editIndex=(idx!==undefined)?idx:null;gf.reset();if(m==='activity'){const a=editIndex!==null?state.activities[editIndex]:{};const dayOptions=['<option value="">'+t('Da decidere','TBD')+'</option>'].concat(TRIP_DATES.map(d=>`<option value="${d}" ${a.day===d?'selected':''}>${dayLabel(d)}</option>`)).join('');genericTitle.textContent=editIndex!==null?t('Modifica attività','Edit activity'):t('Suggerisci attività','Suggest activity');fields.innerHTML='<label class="span2">'+t('Titolo','Title')+'<input name="title" required value="'+esc(a.title||'')+'"></label><label>'+t('Giorno','Day')+'<select name="day">'+dayOptions+'</select></label><label>'+t('Proposta da','Suggested by')+'<input name="by" value="'+esc(a.by||'')+'"></label><label class="span2">'+t('Descrizione','Description')+'<textarea name="description">'+esc(a.description||'')+'</textarea></label>'}if(m==='shopping'){genericTitle.textContent=t('Aggiungi prodotto','Add item');fields.innerHTML='<label class="span2">'+t('Prodotto','Item')+'<input name="name" required></label>'}if(m==='expense'){genericTitle.textContent=t('Aggiungi spesa','Add expense');fields.innerHTML='<label>'+t('Descrizione','Description')+'<input name="name" required></label><label>'+t('Importo','Amount')+'<input name="amount" type="number" step="0.01" required></label><label class="span2">'+t('Pagata da','Paid by')+'<input name="payer"></label>'}
 if(m==='award'){genericTitle.textContent=t('Aggiungi premio','Add award');fields.innerHTML='<label>'+t('Emoji','Emoji')+'<input name="emoji" placeholder="🏆"></label><label>'+t('Nome premio','Award name')+'<input name="title" required></label><label class="span2">'+t('Descrizione','Description')+'<input name="description" placeholder="'+t('Es. Chi ha...','E.g. Who...')+'"></label>'}
 if(m==='restaurant'){genericTitle.textContent=t('Proponi ristorante','Suggest restaurant');fields.innerHTML='<label class="span2">'+t('Nome ristorante','Restaurant name')+'<input name="name" required></label><label class="span2">'+t('Link Google Maps','Google Maps link')+'<input name="link" type="url" placeholder="https://maps.google.com/..." required></label><label>'+t('Proposto da','Suggested by')+'<input name="by"></label><label class="span2">'+t('Note','Notes')+'<input name="note" placeholder="'+t('Es. Pesce fresco, prenotare','E.g. Fresh fish, book ahead')+'"></label>'}
 gd.showModal()}
 addActivity.onclick=()=>openGeneric('activity');addShopping.onclick=()=>openGeneric('shopping');addExpense.onclick=()=>openGeneric('expense');addAward.onclick=()=>openGeneric('award');addRestaurant.onclick=()=>openGeneric('restaurant');
-gf.onsubmit=e=>{if(e.submitter?.value!=='save')return;e.preventDefault();let f=new FormData(gf);if(mode==='activity'){if(editIndex!==null){let old=state.activities[editIndex];state.activities[editIndex]={...old,title:f.get('title'),date:f.get('date'),by:f.get('by'),description:f.get('description')};}else{state.activities.push({title:f.get('title'),date:f.get('date'),by:f.get('by'),description:f.get('description'),votes:[]});}}if(mode==='shopping')state.shopping.push({name:f.get('name'),done:false});if(mode==='expense')state.expenses.push({name:f.get('name'),amount:Number(f.get('amount')),payer:f.get('payer')});if(mode==='award')state.awards.push({emoji:f.get('emoji')||'🏆',title:f.get('title'),descriptionIt:f.get('description'),descriptionEn:f.get('description'),votes:[]});if(mode==='restaurant')state.restaurants.push({name:f.get('name'),link:f.get('link'),by:f.get('by'),note:f.get('note')});if(mode==='house')state.houseInfo={wifiName:f.get('wifiName'),wifiPassword:f.get('wifiPassword'),checkin:f.get('checkin'),checkout:f.get('checkout'),rules:f.get('rules'),emergency:f.get('emergency')};gd.close();save()}
+gf.onsubmit=e=>{if(e.submitter?.value!=='save')return;e.preventDefault();let f=new FormData(gf);if(mode==='activity'){if(editIndex!==null){let old=state.activities[editIndex];state.activities[editIndex]={...old,title:f.get('title'),day:f.get('day')||'',by:f.get('by'),description:f.get('description')};}else{state.activities.push({title:f.get('title'),day:f.get('day')||'',by:f.get('by'),description:f.get('description'),votes:[]});}}if(mode==='shopping')state.shopping.push({name:f.get('name'),done:false});if(mode==='expense')state.expenses.push({name:f.get('name'),amount:Number(f.get('amount')),payer:f.get('payer')});if(mode==='award')state.awards.push({emoji:f.get('emoji')||'🏆',title:f.get('title'),descriptionIt:f.get('description'),descriptionEn:f.get('description'),votes:[]});if(mode==='restaurant')state.restaurants.push({name:f.get('name'),link:f.get('link'),by:f.get('by'),note:f.get('note')});if(mode==='house')state.houseInfo={wifiName:f.get('wifiName'),wifiPassword:f.get('wifiPassword'),checkin:f.get('checkin'),checkout:f.get('checkout'),rules:f.get('rules'),emergency:f.get('emergency')};gd.close();save()}
 window.vote=i=>{let a=state.activities[i],v=prompt(t('Il tuo nome','Your name'));if(!v)return;a.votes=a.votes||[];a.votes.includes(v)?a.votes=a.votes.filter(x=>x!==v):a.votes.push(v);save()}
 window.toggleShop=i=>{state.shopping[i].done=!state.shopping[i].done;save()}
 window.removeExpense=i=>{state.expenses.splice(i,1);save()}
@@ -359,8 +366,23 @@ if(!state) return;
 await preloadTranslations();
 state.people=state.people||[];state.activities=state.activities||[];state.shopping=state.shopping||[];state.expenses=state.expenses||[];state.awards=state.awards||DEFAULT_AWARDS;state.restaurants=state.restaurants||[];
 peopleList.innerHTML=state.people.map((p,i)=>`<div class="item"><div class="itemtop"><div><h3>${esc(p.name)}</h3><span class="badge">${p.paid?t('Pagato','Paid'):t('Da pagare','To pay')}</span></div><button class="btn secondary" onclick="editPerson(${i})">${t('Modifica','Edit')}</button></div><div class="two"><div class="mini"><small>${t('Arrivo','Arrival')}</small><b>${esc(p.arrival||t('Da aggiornare','To update'))}</b></div><div class="mini"><small>${t('Partenza','Departure')}</small><b>${esc(p.departure||t('Da aggiornare','To update'))}</b></div></div></div>`).join('');
-activityList.innerHTML=state.activities.map((a,i)=>{const votes=a.votes||[];return `<div class="item"><div class="itemtop"><div><h3>${esc(trText(a.title))}</h3><span class="muted">${esc(a.date?trText(a.date):t('Da decidere','TBD'))}</span></div><button class="btn secondary" onclick="openGeneric('activity',${i})">✏️ ${t('Modifica','Edit')}</button></div><p class="muted">${esc(trText(a.description)||'')}</p>${a.by?`<small>${t('Proposta da','Suggested by')}: ${esc(a.by)}</small>`:''}<div class="vote"><span class="badge">${votes.length} 👍</span><button onclick="vote(${i})">👍 ${t('Partecipo','I’m in')}</button><span>${esc(votes.join(', '))}</span></div></div>`}).join('');
+activityList.innerHTML=state.activities.map((a,i)=>{const votes=a.votes||[];const dateLabel=a.day?dayLabel(a.day):(a.date?trText(a.date):t('Da decidere','TBD'));return `<div class="item"><div class="itemtop"><div><h3>${esc(trText(a.title))}</h3><span class="muted">${esc(dateLabel)}</span></div><button class="btn secondary" onclick="openGeneric('activity',${i})">✏️ ${t('Modifica','Edit')}</button></div><p class="muted">${esc(trText(a.description)||'')}</p>${a.by?`<small>${t('Proposta da','Suggested by')}: ${esc(a.by)}</small>`:''}<div class="vote"><span class="badge">${votes.length} 👍</span><button onclick="vote(${i})">👍 ${t('Partecipo','I’m in')}</button><span>${esc(votes.join(', '))}</span></div></div>`}).join('');
 const CAR_GROUPS=[{key:'tere',it:'Macchina Tere',en:"Tere's car"},{key:'noleggio1',it:'Macchina a noleggio 1',en:'Rental car 1'},{key:'noleggio2',it:'Macchina a noleggio 2',en:'Rental car 2'},{key:'autobus',it:'🚌 Autobus',en:'🚌 Bus'}];
+function renderCalendar(){
+  const grid=document.getElementById('calendarGrid');
+  if(!grid) return;
+  const scheduled = TRIP_DATES.map(d=>({
+    date:d,
+    activities:(state.activities||[]).filter(a=>a.day===d)
+  }));
+  const unscheduled=(state.activities||[]).filter(a=>!a.day);
+  grid.innerHTML = scheduled.map(day=>{
+    const w=weatherByDate[day.date];
+    const weatherHtml = w ? `${WEATHER_ICONS[w.code]||'🌡️'} ${Math.round(w.max)}°/${Math.round(w.min)}° · 🌧️${w.rain}%` : t('meteo non disp.','forecast n/a');
+    const actsHtml = day.activities.length ? day.activities.map(a=>`<div class="mini"><b>${esc(trText(a.title))}</b>${a.by?`<br><small>${t('da','by')} ${esc(a.by)}</small>`:''}</div>`).join('') : `<span class="muted">${t('Nessuna attività ancora','No activities yet')}</span>`;
+    return `<div class="card full"><div class="itemtop"><div><h3>${dayLabel(day.date)}</h3><span class="muted">${weatherHtml}</span></div></div><div class="two" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr));margin-top:11px">${actsHtml}</div></div>`;
+  }).join('') + (unscheduled.length ? `<div class="card full accent"><h3>${t('Da programmare','Not yet scheduled')}</h3><div class="two" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr));margin-top:11px">${unscheduled.map(a=>`<div class="mini"><b>${esc(trText(a.title))}</b></div>`).join('')}</div></div>` : '');
+}
 function renderCarBlock(containerId, field, timeField){
   const container = document.getElementById(containerId);
   container.innerHTML = CAR_GROUPS.map(g=>{
@@ -394,6 +416,7 @@ initMap();
 updateMapMarkers();
 renderHouseInfo();
 renderPhotos();
+renderCalendar();
 }
 const trip=new Date('2026-07-29T00:00:00+02:00');countdown.textContent=Math.max(0,Math.ceil((trip-new Date())/86400000));
 it.onclick=()=>applyLang('it');en.onclick=()=>applyLang('en');
@@ -401,6 +424,7 @@ it.onclick=()=>applyLang('it');en.onclick=()=>applyLang('en');
 (async function init(){
   await loadState();
   applyLang('it');
+  loadWeather();
 })();
 </script>
 </body></html>
